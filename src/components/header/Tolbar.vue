@@ -10,7 +10,7 @@
     <b-collapse id="nav-collapse" is-nav>
       <b-navbar-nav>
         <b-nav-item :to="'/'">Home</b-nav-item>
-        <b-nav-item :to="'portada'">Portada</b-nav-item>
+        <b-nav-item  @click="portada_form" :to="'portada'">Portada</b-nav-item>
       </b-navbar-nav>
 
       <!-- Right aligned nav items -->
@@ -47,16 +47,16 @@
 </style>
 
 <script>
+  import {mapMutations} from 'vuex'
 
+  export default {
 
-export default {
-    
-}
+    methods:{
+      ...mapMutations(['portada_c']),
+      portada_form(){
+        this.portada_c(true)
+      }
+    }
+  }
 
 </script>
-
-<style scoped>
-h1{
-    color: black;
-}
-</style>

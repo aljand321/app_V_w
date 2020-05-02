@@ -21,6 +21,11 @@ Vue.use(VueRouter)
     name: 'Portada',
    
     component: () => import( '../views/Portada.vue')
+  },
+  {
+    path: '/portada/:id',
+    name: 'Portada1',
+    component: () => import( '../views/Portada.vue')
   }
 ]
 
