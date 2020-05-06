@@ -1,8 +1,8 @@
 <template>
-  <div class="mt-5">
+  <div class="mt-3">
     <!-- <img alt="Vue logo" src="../assets/logo.png">
     <HelloWorld msg="Welcome to Your Vue.js App"/> -->
-    <b-row class="mt-5">
+    <b-row>
        
             <b-col cols="12" md="4" v-for="(list, index) of list_portada" :key="index">
                <b-card
@@ -16,9 +16,10 @@
                 >
                 <b-card-text>
                     {{list.description}}
-                </b-card-text>
+                </b-card-text>                   
+                    <b-button @click="redirect(list.id)" variant="primary">Ver</b-button>
 
-                    <b-button @click="redirect(list.id), portada_form()" variant="primary">Ver</b-button>
+                    <b-button @click="after_delete(list.id)" variant="danger" class="float-right" >Eliminar</b-button>
                 </b-card>
             </b-col>       
         
@@ -45,9 +46,7 @@ export default {
     },
     methods:{
         ...mapMutations(['portada_c']),
-        portada_form(){
-            this.portada_c(false)
-        },
+        
         async get_list (){
 
             try{
@@ -62,6 +61,48 @@ export default {
         },
         redirect(id){
             this.$router.push('/portada/'+id)
+             this.portada_c(false)
+        },
+
+        delete_portada(id){                       
+            this.axios.delete(this.url+'/portada/'+id)
+            .then(data  => {
+                console.log(data.data, " esto es el error que quiero ver")
+                if (data.data.success == true){
+                    this.$swal('Eliminado', 'Se elimino', 'success')
+                    this.get_list();
+                }
+                
+            })
+            .catch(error => {
+                if(error){
+                  this.$swal({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'No se pudo elminar los datos'                   
+                })  
+                }
+            })
+        },
+        
+        after_delete(id){
+            this.$swal({
+            title: '¿Seguro que quieres elminar?',
+            text: 'No se puede revertir esta accion',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si, eliminar',
+            cancelButtonText: 'No, cancelar',
+            showCloseButton: true,
+            showLoaderOnConfirm: true
+            }).then((result) => {
+            if(result.value) {
+                /* this.$swal('Deleted', 'You successfully deleted this file', 'success') */
+               this.delete_portada(id)
+            } else {
+                this.$swal('Cancelado', 'Su Album sigue activo', 'info')
+            }
+            })
         }
         
     }

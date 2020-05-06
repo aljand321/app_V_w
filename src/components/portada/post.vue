@@ -35,7 +35,7 @@
                     ></b-form-file>
                     <div class="mt-3">
                         <b-button type="submit"  variant="primary">Submit</b-button>                    
-                        <b-button type="reset" variant="danger">Reset</b-button>      
+                        <b-button type="reset"  class="float-right" variant="danger">Reset</b-button>      
                     </div>                                 
                 </b-form>
             </b-col>
@@ -66,7 +66,7 @@
         </b-row>   
          <b-row v-else>
             <b-col cols="12" md="6" lg="6">
-                <b-form >
+                <b-form @submit="update_portada">
                     <b-form-group
                         id="input-group-1"
                         label="Title"
@@ -92,8 +92,8 @@
                     </b-form-group>
                     
                     <div class="mt-3">
-                        <b-button type="submit"  variant="primary">Submit</b-button>                    
-                        <b-button type="reset" variant="danger">Reset</b-button>      
+                        <b-button type="submit"  variant="primary">Actualizar</b-button>                    
+                        <b-button type="reset"  class="float-right" variant="danger">Reset</b-button>      
                     </div>                                 
                 </b-form>
             </b-col>
@@ -115,13 +115,12 @@
                     </b-row>
                 </b-container>    
             </b-col>
-         </b-row>
-        <h1> {{id_params}} </h1>    
+         </b-row> 
     </div>
 </template>
 <script>
     import axios from 'axios';
-    import VueCoreVideoPlayer from 'vue-core-video-player';
+    
     import {mapState} from 'vuex';
     import {mapMutations} from 'vuex';
 
@@ -143,7 +142,11 @@
                 {name:'Selecione imagen.......', text:'', state:null}
             ],
             id_params: '',
-            get_one_p:{}
+            get_one_p:{},
+            respuesta_post:{
+                success: false,
+                id_respuesta:''
+            }
             //ver_estado:this.portada_create
         }),
         created(){           
@@ -166,10 +169,42 @@
             },
 
             async get_one_portada(){
-                var one_portada = await this.axios.get(this.url + '/portada/' + this.id_params )
-                this.get_one_p = one_portada.data.data[0]
-                console.log(this.get_one_p, " esto es  <<<<<<<<<<<<")
-                
+                try{
+                    this.showAlert(10000*5)
+                    var one_portada = await this.axios.get(this.url + '/portada/' + this.id_params )
+                    this.get_one_p = one_portada.data.data[0]
+                    console.log(this.get_one_p, " esto es  <<<<<<<<<<<<")   
+                }catch(erro){
+                    console.log(error)
+                }finally{
+                    this.showAlert(500)
+                    
+                }
+                             
+            },
+            alert_update(){
+                this.$swal({
+                    icon: 'success',
+                    text: 'Se actualizaron los datos correctamente',
+                })
+            },
+            //actualizar datos
+            async update_portada(e){
+                e.preventDefault();  
+                try{  
+                    this.showAlert(10000*5)                  
+                    var upadte = {
+                        title:this.get_one_p.title,
+                        description:this.get_one_p.description
+                    }
+                    var upadte_data = await this.axios.put(this.url + '/portada/' + this.$route.params.id, upadte)
+                    
+                }catch(erro){
+                    console.log(erro)
+                }finally{                     
+                    this.alert_update()
+                    console.log(" finalizado ")
+                }
             },
 
             hover_m(data){
@@ -200,7 +235,13 @@
                             headers: {
                                 'Content-Type': 'multipart/form-data'
                             }
-                        })                    
+                        }) 
+
+                        if(enviar.data.success == true){
+                            this.respuesta_post.id_respuesta = enviar.data.data.id
+                            this.respuesta_post.success = enviar.data.success
+                        }
+                        console.log(enviar.data, "  xzzzzzzzzzzzzzzzz")                   
                     }catch (error){
                         console.log(error)
                     }finally{
@@ -210,14 +251,19 @@
                             this.form_data1[index].text = ''
                             this.form_data1[index].state = null
                         }
-                        this.$router.push('/')
+                        if(this.respuesta_post.success == true){                 
+                            this.$router.push('/add_music_video/'+this.respuesta_post.id_respuesta)
+                        }else{
+                            this.alert1()
+                        }
+                        //
                         error = false                       
                     } 
                 }
    
             },            
             ver (event) { // esta funcion es para poder leer  una imagen y mostrarlo en pantalla
-               var img = event.target;
+                var img = event.target;
                 if (img.files && img.files[0]){
                     this.data_image = img.files[0]
                     var reader = new FileReader();
@@ -242,6 +288,13 @@
                     icon: 'error',
                     title: 'Oops...',
                     text:  'Todos los campos son obligatorios',
+                })
+            },
+             alert1(){
+                this.$swal({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text:  'No se pudo insertar los datos',
                 })
             },
         },

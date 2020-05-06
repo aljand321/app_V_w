@@ -26,6 +26,11 @@ Vue.use(VueRouter)
     path: '/portada/:id',
     name: 'Portada1',
     component: () => import( '../views/Portada.vue')
+  },
+  {
+    path: '/add_music_video/:id',
+    name: 'add_video',
+    component: () => import( '../views/Video.vue')
   }
 ]
 

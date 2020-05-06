@@ -1,11 +1,12 @@
 <template>
   <div id="app">
     <Tolbar/>    
-    
+   
     <b-container>
       <router-view v-if ="bol"/>
     </b-container>   
-    
+    <br>
+    <br>
   </div>
 </template>
 
