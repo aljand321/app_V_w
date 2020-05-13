@@ -1,4 +1,5 @@
 <template>
+    <b-container>   
     <div class="mt-5">
        
         <b-row v-if="portada_create == true">
@@ -117,6 +118,7 @@
             </b-col>
          </b-row> 
     </div>
+    </b-container>   
 </template>
 <script>
     import axios from 'axios';

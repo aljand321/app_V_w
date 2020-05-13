@@ -1,10 +1,10 @@
 <template>
-  <div class="mt-3">
+  <div>
     <!-- <img alt="Vue logo" src="../assets/logo.png">
     <HelloWorld msg="Welcome to Your Vue.js App"/> -->
-    <b-row>
-       
-            <b-col cols="12" md="4" v-for="(list, index) of list_portada" :key="index">
+    <div class="container-2">
+        <b-row>        
+            <b-col cols="12" md="3" v-for="(list, index) of list_portada" :key="index">
                <b-card
                     :title='list.title'
                     :img-src=" url +'/'+ list.imagePath"
@@ -12,18 +12,19 @@
                     img-top
                     tag="article"
                     style="max-width: 20rem;"
-                    class="mb-2"
+                    class="mb-2 hover"                   
                 >
-                <b-card-text>
+                <b-card-text @click="selected(list.id)">
                     {{list.description}}
                 </b-card-text>                   
                     <b-button @click="redirect(list.id)" variant="primary">Ver</b-button>
-
                     <b-button @click="after_delete(list.id)" variant="danger" class="float-right" >Eliminar</b-button>
                 </b-card>
             </b-col>       
-        
-    </b-row>
+
+        </b-row>
+    </div>
+    
   </div>
 </template>
 
@@ -103,8 +104,39 @@ export default {
                 this.$swal('Cancelado', 'Su Album sigue activo', 'info')
             }
             })
+        },
+        
+        async selected(id_portada){
+            var erro = false
+            try{    
+                var respuesta = await this.axios.get(this.url+'/album_portada/'+id_portada)
+                console.log(respuesta.data.length, " esto es la respuesta", " id: ", id_portada)
+                if(respuesta.data.length == 0){
+                    erro = true
+                }
+            }catch(error){
+                console.error(error)
+            }finally{
+                if(erro == false){
+                    this.$router.push('/Video_album/'+id_portada)
+                }else{
+                    this.$router.push('/add_music_video/'+id_portada)
+                }
+            }
         }
         
     }
 }
 </script>
+
+<style  scoped>
+    .container-2{
+        width: 100%;
+        height: 100%;
+        padding: 30px;
+    }
+    .hover:hover{
+        box-shadow: 1px 2px 15px 0 rgb(46, 45, 45), 1px 2px 15px 0 rgb(46, 45, 45);        
+    }
+    
+</style>

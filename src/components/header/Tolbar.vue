@@ -10,6 +10,7 @@
     <b-collapse id="nav-collapse" is-nav>
       <b-navbar-nav>
         <b-nav-item :to="'/'">Home</b-nav-item>
+        <b-nav-item :to="'/lista_videos'">Videos</b-nav-item>
         <b-nav-item  @click="portada_form" :to="'/portada'">Portada</b-nav-item>
       </b-navbar-nav>
 

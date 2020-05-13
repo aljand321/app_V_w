@@ -1,4 +1,5 @@
 <template>
+    <b-container>   
     <div class="mt-3">
         <b-row v-if="one_video_selected[5].estado == false">
                  
@@ -54,7 +55,7 @@
                 </b-container> 
                 <div v-else>                                       
                     <div class="player-container">                                  
-                    <vue-core-video-player :autoplay="false" :src="form_array[5].text"></vue-core-video-player>  
+                        <vue-core-video-player :autoplay="false" :src="form_array[5].text"></vue-core-video-player>  
                     </div> 
                 </div>    
             </b-col>
@@ -100,7 +101,7 @@
         <b-row>
             <div class="news-cards">            
                     <div class="card esto" v-for="(list,index) in list_data" :key="index" 
-                    @mouseover="hover(true, index)" @mouseleave="hover(false, index)">
+                        @mouseover="hover(true, index)" @mouseleave="hover(false, index)">
                         <!-- <img class="card-img" src="https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/bologna-3.jpg" alt="Bologna"> -->
                         <video  class="card-img" :src="url+'/'+list.video"></video> 
                         
@@ -122,6 +123,7 @@
             <pre class="m-0">{{ one_video_selected }}</pre>
         </b-card> -->
     </div>
+    </b-container>   
 </template>
 
 <script>

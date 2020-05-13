@@ -31,6 +31,21 @@ Vue.use(VueRouter)
     path: '/add_music_video/:id',
     name: 'add_video',
     component: () => import( '../views/Video.vue')
+  },
+  {
+    path: '/Video_album/:id',
+    name: 'Video_album',
+    component: () => import( '../views/VerAlbum.vue')
+  },
+  {
+    path: '/lista_videos',
+    name : 'Video_all',
+    component: () => import( '../views/VideoAll.vue')
+  },
+  {
+    path: '/ver_video/:id',
+    name : 'Ver',
+    component: () => import( '../views/Reproductor.vue')
   }
 ]
 

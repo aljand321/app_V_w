@@ -2,9 +2,9 @@
   <div id="app">
     <Tolbar/>    
    
-    <b-container>
-      <router-view v-if ="bol"/>
-    </b-container>   
+    
+    <router-view v-if ="bol"/>
+    
     <br>
     <br>
   </div>
