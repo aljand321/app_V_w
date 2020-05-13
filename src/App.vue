@@ -5,8 +5,7 @@
     
     <router-view v-if ="bol"/>
     
-    <br>
-    <br>
+    
   </div>
 </template>
 

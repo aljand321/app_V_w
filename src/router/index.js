@@ -46,6 +46,11 @@ Vue.use(VueRouter)
     path: '/ver_video/:id',
     name : 'Ver',
     component: () => import( '../views/Reproductor.vue')
+  },
+  {
+    path: '/Videos_listaR/:id',
+    name : 'ListaRvideos',
+    component: () => import( '../views/ListaVideos.vue')
   }
 ]
 

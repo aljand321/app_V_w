@@ -21,11 +21,11 @@
           <b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
         </b-nav-form>
 
-        <b-nav-item-dropdown text="Lang" right>
-          <b-dropdown-item href="#">EN</b-dropdown-item>
-          <b-dropdown-item href="#">ES</b-dropdown-item>
+        <b-nav-item-dropdown text="Mostrar mas" right>
+          <b-dropdown-item v-for="(list,index) of lista_reproduccion" :key="index" href="#">{{list.title}}</b-dropdown-item>
+          <!-- <b-dropdown-item href="#">ES</b-dropdown-item>
           <b-dropdown-item href="#">RU</b-dropdown-item>
-          <b-dropdown-item href="#">FA</b-dropdown-item>
+          <b-dropdown-item href="#">FA</b-dropdown-item> -->
         </b-nav-item-dropdown>
 
         <b-nav-item-dropdown right>
@@ -49,13 +49,26 @@
 
 <script>
   import {mapMutations} from 'vuex'
-
+  var data_url = require('../../assets/p1.js')
   export default {
-
+    data:() => ({
+      url: data_url.default.url,
+      lista_reproduccion:[]
+    }),
+    created(){
+      this.get_lista_reproduccion();
+    },
     methods:{
       ...mapMutations(['portada_c']),
       portada_form(){
         this.portada_c(true)
+      },
+      get_lista_reproduccion(){
+        this.axios.get(this.url+'/lista_reproduccion')
+        .then(data  => {
+          this.lista_reproduccion = data.data.data
+          console.log(this.lista_reproduccion, " esto es la lista de reproduccion")
+        })
       }
     }
   }
