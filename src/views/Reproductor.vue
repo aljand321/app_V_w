@@ -1,3 +1,4 @@
+/* ESTE ES EL REPRODUCTOR DE TODOS LOS VIDEOS */
 <template>
     <div style="width:100%; height: 100%; overflow-y: scroll;" class="container-2">
        <b-row>
@@ -67,9 +68,9 @@
            </b-cols>
        </b-row> -->
        
-         
+    <button @click="prueba2">ver</button>
     <br><br>
-    <button @click="check(1)" >ver {{id_video}}</button>
+   
     <b-modal
       id="modal-center"
       centered
@@ -99,8 +100,10 @@
 </template>
 
 <script>
-var video = require('../assets/aoa.mp4')
-var data_url = require('../assets/p1.js')
+import { mapMutations } from 'vuex';
+import { mapActions } from 'vuex';
+var video = require('../assets/aoa.mp4');
+var data_url = require('../assets/p1.js');
 //https://bootstrap-vue.org/docs/components/modal#modals
 export default {
     data:() => ({
@@ -113,8 +116,10 @@ export default {
         name:'',
         nameState: null,
         list_reproduccion: [],
-        video_lista_data:[]
+        video_lista_data:[],
+        esto:false
     }),
+
     created(){
         this.id_video = this.$route.params.id;
         this.one_video();
@@ -125,6 +130,10 @@ export default {
         this.get_video_lista();
     },
     methods:{
+        ...mapActions(['get_list_reproduccion_vuex']),
+        prueba2(){
+            this.get_list_reproduccion_vuex();
+        },
         async one_video(){
             try{
                 var video_one = await this.axios.get(this.url+'/album/'+this.id_video)
@@ -206,7 +215,7 @@ export default {
                 
             }finally{
                 if(error == false){
-                    this.get_list_reproduccion()            
+                    this.get_list_reproduccion();
                 }else{
                     console.log("no se pudo insertar los datos")
                 }

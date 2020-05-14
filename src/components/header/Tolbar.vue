@@ -19,14 +19,17 @@
         <b-nav-form>
           <b-form-input size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
           <b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
-        </b-nav-form>
-
-        <b-nav-item-dropdown text="Mostrar mas" right>
-          <b-dropdown-item v-for="(list,index) of lista_reproduccion" :key="index" href="#">{{list.title}}</b-dropdown-item>
-          <!-- <b-dropdown-item href="#">ES</b-dropdown-item>
-          <b-dropdown-item href="#">RU</b-dropdown-item>
-          <b-dropdown-item href="#">FA</b-dropdown-item> -->
-        </b-nav-item-dropdown>
+        </b-nav-form>        
+        <li class="nav-item dropdown">
+          <a v-on:click="click_list" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Mostrar mas
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" v-for="(list,index) of lista_reproduccion_vuex" :key="index" :href="'/Videos_listaR/'+list.id" >{{list.title}}</a>
+            <!-- <a class="dropdown-item" href="#">Another action</a> -->
+            
+          </div>
+        </li>
 
         <b-nav-item-dropdown right>
           <!-- Using 'button-content' slot -->
@@ -43,33 +46,29 @@
   </div>
 </template>
 
-<style lang="scss">
-
-</style>
 
 <script>
-  import {mapMutations} from 'vuex'
+  import { mapState } from 'vuex';
+  import { mapMutations } from 'vuex'
+  import { mapActions } from 'vuex'
   var data_url = require('../../assets/p1.js')
   export default {
     data:() => ({
       url: data_url.default.url,
-      lista_reproduccion:[]
+      lista_reproduccion:[],
     }),
-    created(){
-      this.get_lista_reproduccion();
-    },
     methods:{
       ...mapMutations(['portada_c']),
+      ...mapActions(['get_list_reproduccion_vuex']),
+      click_list(){
+        this.get_list_reproduccion_vuex();
+      },
       portada_form(){
         this.portada_c(true)
-      },
-      get_lista_reproduccion(){
-        this.axios.get(this.url+'/lista_reproduccion')
-        .then(data  => {
-          this.lista_reproduccion = data.data.data
-          console.log(this.lista_reproduccion, " esto es la lista de reproduccion")
-        })
       }
+    },
+    computed:{
+      ...mapState(['lista_reproduccion_vuex']),
     }
   }
 

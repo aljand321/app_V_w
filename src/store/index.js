@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 Vue.use(Vuex)
-
+var url = require('../assets/p1.js')
 export default new Vuex.Store({
   state: {
     portada_create:true,
@@ -15,7 +15,9 @@ export default new Vuex.Store({
       genero:'',
       videoPath:'',
       estado:false
-    }
+    },
+    //esto es la lista de reproduccion
+    lista_reproduccion_vuex:[]
   },
   mutations: {
     portada_c(state, data){
@@ -32,9 +34,18 @@ export default new Vuex.Store({
       state.oneVideo.videoPath = data.video_data
       state.oneVideo.estado = data.estado
     },
+    llenar_lista_reproducion(state, data_list){
+      state.lista_reproduccion_vuex = data_list
+    }
     
   },
   actions: {
+    get_list_reproduccion_vuex: async function({commit}){
+      const data = await fetch('http://192.168.1.152:3000/lista_reproduccion')
+      const get_data = await data.json();
+      console.log(get_data.data, " esto es la lista de reproducriones")
+      commit('llenar_lista_reproducion', get_data.data)
+    }
   },
   modules: {
   }
