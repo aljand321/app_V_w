@@ -24,7 +24,7 @@
                             <div class="row no-gutters">
                                 <div cols="4">
                                     <!-- <img  src="https://channel-korea.com/wp-content/uploads/2018/12/officiallykmusic.jpg" class="card-img" alt="..."> -->
-                                    <video style="width:100px; height: 100%;" :src="url+'/'+list.videoPath"></video>
+                                    <img style="width:100px; height: 100%;" :src="url+'/'+list.videoPath">
                                 </div>
                                 <div cols="8">
                                     <div class="card-body">
@@ -38,7 +38,9 @@
                 </div>
            </b-col>
        </b-row>
-        
+        <!-- <b-card class="mt-3" header="Form Data Result">
+            <pre class="m-0">{{ videos_list }}</pre>
+        </b-card> -->
     <br><br>
     </div>
 </template>
@@ -61,23 +63,26 @@ export default {
         this.list_video()
     },
     methods:{
-        css(index){
-           
-            
+        css(index){          
             if( this.videos_list[index].videoPath == this.video ){
                 return true
-            }
-            
-           
+            }           
         },
         async list_video(){
 
             try{
                 var videos = await this.axios.get(this.url+'/album_portada/'+this.id_portada)
-                this.videos_list = videos.data
-                this.video = videos.data[0].videoPath
-                this.name_video = videos.data[0].nombre
-                this.artista_video_name = videos.data[0].artista
+                
+                var arr = []
+                for(var i = 0; i < videos.data.length; i++){
+                    if(videos.data[i].video_albums.length > 0){
+                        arr.push(videos.data[i])
+                    }
+                }
+                this.videos_list = arr
+                this.video = this.videos_list[0].video_albums[0].video
+                this.name_video = this.videos_list[0].nombre
+                this.artista_video_name = this.videos_list[0].artista
                 this.position_video = 0
                 
             }catch(err){
@@ -90,7 +95,7 @@ export default {
            
             for(var i = 0; i < this.videos_list.length; i++){
                 if( i == index ){
-                    this.video = this.videos_list[i].videoPath
+                    this.video = this.videos_list[i].video_albums[0].video
                     this.position_video = i
                     this.name_video = this.videos_list[i].nombre
                     this.artista_video_name = this.videos_list[i].artista

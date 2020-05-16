@@ -4,7 +4,7 @@
        <b-row>
            <b-col cols="12" md="8" lg="8">
                <div class="video-container">                   
-                    <video  controls autoplay v-if="video != {}" style="width:100%" :src="url+'/'+video.videoPath" @ended="video_end($event,video.id)"></video>
+                    <video  controls autoplay v-if="ver_video != ''" style="width:100%" :src="url+'/'+ver_video" @ended="video_end($event,video.id)"></video>
                </div>
                <div class="title-video">
                    <h5> {{video.artista}} - {{video.nombre}} </h5>
@@ -41,7 +41,7 @@
                             @click="video_click(index)" >
                             <div class="row no-gutters">
                                 <div cols="4">                                    
-                                    <video style="width:100px; height: 100%;" :src="url+'/'+list.videoPath"></video>
+                                    <img style="width:100px; height: 100%;" :src="url+'/'+list.videoPath">
                                 </div>
                                 <div cols="8">
                                     <div class="card-body">
@@ -55,7 +55,7 @@
                 </div>
            </b-col>
        </b-row>
-       <!-- <b-row>
+        <!-- <b-row>
            <b-col cols="4">
                 <b-card class="mt-3" header="Form Data Result">
                     <pre class="m-0">{{ list_reproduccion }}</pre>
@@ -66,9 +66,7 @@
                     <pre class="m-0">{{ video_lista_data }}</pre>
                 </b-card>
            </b-cols>
-       </b-row> -->
-       
-    <button @click="prueba2">ver</button>
+        </b-row> -->
     <br><br>
    
     <b-modal
@@ -109,6 +107,7 @@ export default {
     data:() => ({
         video1:video,
         video:{},
+        ver_video:'',
         url:data_url.default.url,
         id_video:'',
         list_video:[],
@@ -131,13 +130,11 @@ export default {
     },
     methods:{
         ...mapActions(['get_list_reproduccion_vuex']),
-        prueba2(){
-            this.get_list_reproduccion_vuex();
-        },
         async one_video(){
             try{
                 var video_one = await this.axios.get(this.url+'/album/'+this.id_video)
                 this.video = video_one.data[0]
+                this.ver_video = video_one.data[0].video_albums[0].video
             }catch(err){
                 console.error(err)
             }finally{
@@ -147,7 +144,14 @@ export default {
         async get_list_video(){
             try{
                 var list = await this.axios.get(this.url+'/album')
-                this.list_video = list.data
+                var arr = []
+                for(var i = 0; i < list.data.length; i++){
+                    if(list.data[i].video_albums.length > '0'){
+                        arr.push(list.data[i])
+                        console.log(list.data[i], " <<")
+                    }
+                }
+                this.list_video = arr
             }catch(err){
                 console.error(err);
                 
@@ -159,6 +163,7 @@ export default {
             for(var i =0 ; i < this.list_video.length; i++){
                 if (i == position){
                     this.video = this.list_video[i]
+                    this.ver_video = this.list_video[i].video_albums[0].video
                     this.id_video = this.list_video[i].id
                 }
             }
@@ -176,8 +181,10 @@ export default {
                     position = i+1
                     if(position < this.list_video.length){
                         this.video = this.list_video[position]
+                        this.ver_video = this.list_video[position].video_albums[0].video
                     }else{
                         this.video = this.list_video[0]
+                        this.ver_video = this.list_video[0].video_albums[0].video
                     }
                 }
             }
