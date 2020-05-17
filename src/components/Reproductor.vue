@@ -3,7 +3,7 @@
         <b-row v-if="list_video[0]">
             <b-col cols="12" md="8" lg="8">
                <div class="video-container">                   
-                    <video  controls autoplay muted v-if="video != {}" style="width:100%" :src="url+'/'+video.videoPath" @ended="video_end($event,video.id)"></video>
+                    <video  controls autoplay muted v-if="video != {}" style="width:100%" :src="url+'/'+video.video_data" @ended="video_end($event,video.id)"></video>
                </div>
                <div class="title-video">
                    <h5> {{video.artista}} - {{video.nombre}} </h5>
@@ -40,7 +40,7 @@
                             @click="video_click(index)" >
                             <div class="row no-gutters">
                                 <div cols="4">                                    
-                                    <video style="width:100px; height: 100%;" :src="url+'/'+list.videoPath"></video>
+                                    <img style="width:100px; height: 100%;" :src="url+'/'+list.portada">
                                 </div>
                                 <div cols="8">
                                     <div class="card-body">
@@ -84,7 +84,7 @@ export default {
             .catch( erro => console.error(erro))
         },
         css(index){
-            if(this.list_video[index].videoPath == this.video.videoPath){
+            if(this.list_video[index].portada == this.video.portada){
                 return true
             }
         },
@@ -96,6 +96,16 @@ export default {
                 }
             }
         },
+        video_end(data, id_video){
+            console.log( this.list_video," esta dando", id_video)
+            for(var i = 0; i < this.list_video.length; i++){
+                if (this.list_video[i].id == id_video){
+                    
+                    this.video = this.list_video[i]
+                    
+                }
+            }
+        }
     }
     
 }

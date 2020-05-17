@@ -20,7 +20,7 @@
         </div>
         <div class="new-cards">
             <div class="card" v-for="(list,index) of video_list" :key="index" >
-                <video class="card-img" :src="url+'/'+list.videoPath"></video> 
+                <img class="card-img" :src="url+'/'+list.videoPath"> 
                 
                 <div  class="card-img-overlay text-white d-flex flex-column justify-content-center">
                     <h4 style="color: white;" class="card-title">{{list.artista}}</h4>                                                    
@@ -68,12 +68,19 @@ export default {
         async get_list_videos(){
             try{
                 var videos = await this.axios.get(this.url+'/album')
-                var last_position = videos.data.length
-                this.video_list = videos.data
-                this.last_video.artista = videos.data[last_position-1].artista
-                this.last_video.name = videos.data[last_position-1].nombre
-                this.last_video.video = videos.data[last_position-1].videoPath
-                this.last_video.id = videos.data[last_position-1].id
+                
+                var arr = []
+                for(var i = 0; i < videos.data.length; i++){
+                    if(videos.data[i].video_albums.length > 0){
+                        arr.push(videos.data[i])
+                    }                    
+                }
+                this.video_list = arr
+                var last_position = arr.length
+                this.last_video.artista = arr[last_position-1].artista
+                this.last_video.name = arr[last_position-1].nombre
+                this.last_video.video = arr[last_position-1].video_albums[0].video
+                this.last_video.id = arr[last_position-1].id
                 console.log(last_position-1)
             }catch(err){
                 console.error(err);
