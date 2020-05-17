@@ -41,7 +41,7 @@ export default new Vuex.Store({
   },
   actions: {
     get_list_reproduccion_vuex: async function({commit}){
-      const data = await fetch('http://192.168.1.152:3000/lista_reproduccion')
+      const data = await fetch('http://192.168.1.151:3000/lista_reproduccion')
       const get_data = await data.json();
       console.log(get_data.data, " esto es la lista de reproducriones")
       commit('llenar_lista_reproducion', get_data.data)
