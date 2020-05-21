@@ -15,7 +15,7 @@
                     <div class="title-album">
                         <h4>{{artista_video_name}}</h4>
                         <!-- <b-button class="float-right" variant="outline-info">Dark</b-button> -->
-                         <b-button @click="add_new_video(id_portada)" class="float-right" variant="dark" title="Align right">
+                         <b-button v-if="admin" @click="add_new_video(id_portada)" class="float-right" variant="dark" title="Align right">
                             <b-icon  icon="plus-square" aria-hidden="true"></b-icon>
                         </b-button>
                     </div>
@@ -47,8 +47,10 @@
 <script>
 var video2 = require('../assets/aoa.mp4')
 var data_url = require('../assets/p1.js')
+var admin_data  = require('../assets/adminData.js')
 export default {
     data:()=> ({
+        admin: admin_data.default.access,
         video:'',
         position_video:'',
         name_video:'',

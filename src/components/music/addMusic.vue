@@ -58,7 +58,7 @@
                             <b-col>
                                 <div >
                                     <div  class="py-4 px-5">
-                                        <b-img  thumbnail fluid :src="no_img"></b-img >
+                                        <b-img style=" width: 100%;" thumbnail fluid :src="no_img"></b-img >
                                     </div>
 
                                 </div>
@@ -71,7 +71,7 @@
                             <b-col>
                                 <div >
                                     <div  class="py-4 px-5">
-                                        <b-img  :src="form_array[5].text"></b-img >  
+                                        <b-img style=" width: 100%;" :src="form_array[5].text"></b-img >  
                                     </div>
 
                                 </div>
@@ -393,10 +393,11 @@ export default {
             var position =  video.files[0].name.split('.').length
              if( video.files[0].name.split('.')[position-1] != 'mp4' &&
                 video.files[0].name.split('.')[position-1] != 'mkv'  &&
-                video.files[0].name.split('.')[position-1] != 'MP4'
+                video.files[0].name.split('.')[position-1] != 'MP4' &&
+                video.files[0].name.split('.')[position-1] != 'MKV'  
                 ){
                
-                this.alert_error('Solo se puede insertar los archivos con la extencion jpg, jpeg, png')
+                this.alert_error('Solo se puede insertar los archivos con la extencion MP4, MKV')
             }else
             if (video.files && video.files[0]){
                 this.file_video = video.files[0]
@@ -471,6 +472,7 @@ export default {
             }else{
                 var err = false
                 try{
+                    this.showAlert(50000*10)
                     const data_form = new FormData();
                     data_form.append('video', this.file_video)
                     var data = await this.axios.post(this.url+'/addVideo_album/'+this.id_video_portada, 
@@ -502,6 +504,7 @@ export default {
                         if(this.one_video_selected[5].estado == true){
                             this.mostrar_video(this.one_video_selected[5].id)
                         }
+                        this.showAlert(5000)
                     }else{
                         console.log("no se pudo insertar los datos")
 

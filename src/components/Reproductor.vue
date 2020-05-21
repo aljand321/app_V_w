@@ -44,8 +44,8 @@
                                 </div>
                                 <div cols="8">
                                     <div class="card-body">
-                                        <h6 lass="card-title" style="font-size: 100%">{{list.artista}} - {{list.nombre}}</h6>
-                                        <p class="card-text"><small style="font-size: 100%" class="text-muted">{{list.album}}</small></p>
+                                        <h6 lass="card-title">{{list.artista}} - {{list.nombre}}</h6>
+                                        <p class="card-text"><small class="text-muted">{{list.album}}</small></p>
                                     </div>
                                 </div>
                             </div>
@@ -57,6 +57,12 @@
         <b-row v-else>
             <h1>No hay videos en esta lista</h1>
         </b-row>
+         <!-- <b-card class="mt-3" header="Form Data Result">
+            <pre class="m-0">{{ video }}</pre>
+        </b-card>
+        <b-card class="mt-3" header="Form Data Result">
+            <pre class="m-0">{{ list_video }}</pre>
+        </b-card> -->
     </div>
 </template>
 <script>
@@ -98,11 +104,15 @@ export default {
         },
         video_end(data, id_video){
             console.log( this.list_video," esta dando", id_video)
+            var position = 0
             for(var i = 0; i < this.list_video.length; i++){
                 if (this.list_video[i].id == id_video){
-                    
-                    this.video = this.list_video[i]
-                    
+                    position = i+1
+                    if(position < this.list_video.length){
+                        this.video = this.list_video[position]
+                    }else{
+                        this.video = this.list_video[0]
+                    }          
                 }
             }
         }
@@ -191,6 +201,17 @@ export default {
 
     .list-card::-webkit-scrollbar-track {
         border-radius: 10px;  
+    }
+    @media (max-width: 470px){
+        .list-card h6{
+           
+            font-size: 2vw;
+        }
+        .list-card p{
+            
+            font-size: 3vw;
+        }
+       
     }
 
 </style>

@@ -11,14 +11,14 @@
       <b-navbar-nav>
         <b-nav-item :to="'/'">Home</b-nav-item>
         <b-nav-item :to="'/lista_videos'">Videos</b-nav-item>
-        <b-nav-item  @click="portada_form" :to="'/portada'">Portada</b-nav-item>
+        <b-nav-item v-if="admin" @click="portada_form" :to="'/portada'">Portada</b-nav-item>
       </b-navbar-nav>
 
       <!-- Right aligned nav items -->
       <b-navbar-nav class="ml-auto">
-        <b-nav-form>
-          <b-form-input size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
-          <b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
+        <b-nav-form @submit.stop.prevent="buscar">
+          <b-form-input size="sm" class="mr-sm-2" v-model="search_data" placeholder="Buscar..."></b-form-input>
+          <b-button  size="sm" class="my-2 my-sm-0" type="submit">Buscar</b-button>
         </b-nav-form>        
         <li class="nav-item dropdown">
           <a v-on:click="click_list" class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -52,14 +52,25 @@
   import { mapMutations } from 'vuex'
   import { mapActions } from 'vuex'
   var data_url = require('../../assets/p1.js')
+  var admin_data  = require('../../assets/adminData.js')
   export default {
     data:() => ({
       url: data_url.default.url,
       lista_reproduccion:[],
+      search_data:'',
+      admin: admin_data.default.access
     }),
     methods:{
       ...mapMutations(['portada_c']),
-      ...mapActions(['get_list_reproduccion_vuex']),
+      ...mapActions(['get_list_reproduccion_vuex','video_search']),
+      buscar(){
+       
+        console.log("se esta buscando")
+        this.video_search(this.search_data)
+        //this.$router.push('/resultado')
+        const path = `/resultado`
+        if (this.$route.path !== path) this.$router.push(path)
+      },
       click_list(){
         this.get_list_reproduccion_vuex();
       },
