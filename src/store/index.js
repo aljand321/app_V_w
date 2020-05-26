@@ -15,10 +15,15 @@ export default new Vuex.Store({
       genero:'',
       videoPath:'',
       estado:false
+      
     },
     //esto es la lista de reproduccion
     lista_reproduccion_vuex:[],
-    search_result:[]
+    search_result:[],
+    //esto es para el buscador  si es true buscara las portadas si es false buscara los videos
+    is_home_state: true,
+    // aqui se almacenara la busqueda de portada
+    search_result_portada:[]
   },
   mutations: {
     portada_c(state, data){
@@ -40,20 +45,33 @@ export default new Vuex.Store({
     },
     inserte_video_serach(state, result){
       state.search_result = result
+    },
+    is_home_boolean(state, data){
+      state.is_home_state = data
+      state.search_result_portada = []
+    },
+    //funcion para añadir el resultado de la buscqueda de portada
+    insert_result_search_portada(state, data){
+      state.search_result_portada = data
     }
     
   },
   actions: {
     get_list_reproduccion_vuex: async function({commit}){
-      const data = await fetch('http://192.168.1.151:3000/lista_reproduccion')
+      const data = await fetch(url.default.url+'/lista_reproduccion')
       const get_data = await data.json();
       commit('llenar_lista_reproducion', get_data.data)
     },
     video_search: async function({commit},params ){
-      const data = await fetch('http://192.168.1.151:3000/buscador?nombre='+params)
+      const data = await fetch(url.default.url+'/buscador?nombre='+params)
       const resultado = await data.json()
       commit('inserte_video_serach', resultado)
-      console.log(resultado, " esto es el resultado que quiero ver")
+    
+    },
+    portada_search: async function({commit},params){
+      const data = await fetch(url.default.url+'/buscar_portada?title='+params)
+      const res = await data.json()
+      commit('insert_result_search_portada', res)
     }
   },  
   

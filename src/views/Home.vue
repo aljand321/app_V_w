@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="search_result_portada == 0">
     <!-- <img alt="Vue logo" src="../assets/logo.png">
     <HelloWorld msg="Welcome to Your Vue.js App"/> -->
     <div class="container-2" v-if="!phone">
@@ -38,12 +38,49 @@
     </div>
     
   </div>
+  <div v-else>
+      <div class="container-2" v-if="!phone">
+        <div class="new-cards">
+            <b-card  v-for="(list, index) of search_result_portada" :key="index"
+                :title='list.title'
+                :img-src=" url +'/'+ list.imagePath"
+                img-alt="Image"
+                img-top
+                tag="article"
+                style="max-width: 20rem;"
+                class="mb-2 hover tamanio"                   
+            >
+            <b-card-text class="text-description" @click="selected(list.id)">
+                {{list.description}}
+            </b-card-text>                   
+                <b-button  @click="redirect(list.id)" variant="primary">Ver</b-button>
+                <b-button v-if="admin" @click="after_delete(list.id)" variant="danger" class="float-right" >Eliminar</b-button>
+            </b-card>
+            
+        </div>
+    </div>
+    <div v-else class="card-horizontal">
+        <div class="item" v-for="(list, index) of search_result_portada" :key="index">
+            <div class="card" style="width: 18rem;">
+                <img @click="selected(list.id)" class="card-img-top" :src="url +'/'+ list.imagePath" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">{{list.title}}</h5>
+                    <p @click="selected(list.id)" class="card-text">{{list.description}}</p>
+                    <b-button  @click="redirect(list.id)" variant="primary">Ver</b-button>
+                    <b-button v-if="admin" @click="after_delete(list.id)" variant="danger" class="float-right" >Eliminar</b-button>
+                </div>
+            </div>
+        </div>
+           
+    </div>
+  </div>
 </template>
 
 <script>
 // @ is an alias to /src
 /* import HelloWorld from '@/components/HelloWorld.vue' */
 import axios from 'axios';
+import { mapState } from 'vuex';
 import {mapMutations} from 'vuex'
 var data_url = require('../assets/p1.js')
 var admin_data  = require('../assets/adminData.js')
@@ -155,7 +192,11 @@ export default {
             }
         }
         
+    },
+    computed:{
+        ...mapState(['search_result_portada'])
     }
+    
 }
 </script>
 
