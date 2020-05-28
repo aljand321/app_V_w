@@ -222,6 +222,7 @@ export default {
         ],
         b_selected:[
             {value:'kpop', text:'Kpop'},
+            {value:'jpop', text:'Jpop'},
             {value:'rock', text:'Rock'},
             {value:'pop', text:'Pop'}         
         ],

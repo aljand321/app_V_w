@@ -62,6 +62,11 @@ export default new Vuex.Store({
       const get_data = await data.json();
       commit('llenar_lista_reproducion', get_data.data)
     },
+    delete_lista_reproduccion: async function({commit}, id_lista){ // funcion que elimina una lista de reproducion del componente tolbar
+      const data = await fetch(url.default.url+'/lista_reproduccion/'+id_lista,{method: 'DELETE'})
+      const data_delete = await data.json()
+      console.log(data_delete)
+    },
     video_search: async function({commit},params ){
       const data = await fetch(url.default.url+'/buscador?nombre='+params)
       const resultado = await data.json()

@@ -1,0 +1,33 @@
+.card1-container{
+    width: 100%;       
+    display: flex;         
+    position: relative;
+    margin-top: 7px ;
+}
+.card1-container:hover{
+    transition: width 1s;
+    margin: auto;
+    margin-top: 10px ;
+    width: 97%;   
+}
+.card1-container img{
+    background-size: cover;
+}
+.card1-image{
+    width: 60%;        
+}
+.card1-title{        
+    width: 100%;
+    background: rgb(255, 255, 255);        
+}
+
+.card1-title p{
+    margin-left: 5px;
+    margin-top: 1px;
+}
+[borderColor]{    
+    border-left: 7px solid rgb(0, 116, 81) ;
+    width: 99%;   
+    margin: auto;
+    margin-top: 9px ;
+}

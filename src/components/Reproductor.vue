@@ -7,9 +7,9 @@
                </div>
                <div class="title-video">
                    <h5> {{video.artista}} - {{video.nombre}} </h5>
-                    <!-- <div class="check-button">   
+                    <div class="check-button">   
                         <div class="btn-group">
-                            <button @click="get_video_lista" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button @click="get_video_lista(video.id_video)" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Guardar
                             </button>
                             <div class="dropdown-menu">
@@ -17,17 +17,17 @@
                                     v-for="(list, index) in list_reproduccion"
                                     
                                     :key="index"
-                                    @change="video_add_lista($event, list.id, index)"
+                                    @change="video_add_lista($event,list.id,video.id_video)"
                                     name="flavour-3a"
                                     :checked="list.data"
                                 >
-                                    {{ list.title }}
+                                  {{list.id}} - {{ list.title }}
                                 </b-form-checkbox>
                                 <div class="dropdown-divider"></div>
                                 <b-dropdown-item v-b-modal.modal-center>Crear nueva lista</b-dropdown-item>
                             </div>
                         </div>                 
-                    </div> -->
+                    </div>
                </div> 
            </b-col>
            <b-col  cols="12" md="4" lg="4">
@@ -36,19 +36,17 @@
                         <h4>Videos</h4>
                     </div>
                     <div  style="overflow-y: scroll;" class="list-card">
-                        <div  v-for="(list,index) of list_video" :key="index" :borderColor="css(index)" class="card mb-3" style="width: 100%;" 
-                            @click="video_click(index)" >
-                            <div class="row no-gutters">
-                                <div cols="4">                                    
-                                    <img style="width:100px; height: 100%;" :src="url+'/'+list.portada">
-                                </div>
-                                <div cols="8">
-                                    <div class="card-body">
-                                        <h6 lass="card-title">{{list.artista}} - {{list.nombre}}</h6>
-                                        <p class="card-text"><small class="text-muted">{{list.album}}</small></p>
-                                    </div>
-                                </div>
+                        <div class="card1-container" :borderColor="css(index)" v-for="(list,index) of list_video" :key="index" >
+                            <div class="card1-image"  @click="video_click(index)">                                
+                                <img style="width:100%; height: 100%;" :src="url+'/'+list.portada">
                             </div>
+                            <div class="card1-title"  @click="video_click(index)">
+                                <p>{{list.artista}} - {{list.nombre}}</p>
+                                <p>{{list.album}}</p>
+                            </div>
+                            <b-button @click="after_delete(list.id)" variant="light" size="sm" >
+                                <b-icon icon="trash" variant="danger" ></b-icon> 
+                            </b-button>
                         </div>
                     </div>
                 </div>
@@ -67,12 +65,14 @@
 </template>
 <script>
 var data_url = require('../assets/p1.js')
+require('../assets/css/card.css')
 export default {
     name:"Reproductor",
     data:()=>({
         url:data_url.default.url,
         video:{},
         list_video:[],
+        list_reproduccion :[]
         
     }),
     created(){
@@ -85,7 +85,7 @@ export default {
             .then(videos => {                
                 this.list_video = videos.data
                 this.video = videos.data[0]
-                console.log(this.list_video, " esto son los videos")
+               
             })
             .catch( erro => console.error(erro))
         },
@@ -103,7 +103,7 @@ export default {
             }
         },
         video_end(data, id_video){
-            console.log( this.list_video," esta dando", id_video)
+           
             var position = 0
             for(var i = 0; i < this.list_video.length; i++){
                 if (this.list_video[i].id == id_video){
@@ -115,7 +115,90 @@ export default {
                     }          
                 }
             }
+            
+        },
+        async get_video_lista(id_video){            
+            try{
+                var data = await this.axios.get(this.url+'/videos_of_lista/'+id_video)
+                this.list_reproduccion = data.data                
+            }catch(err){  
+                console.error(err)      
+            }
+            finally{
+                data.data = []
+            }
+        },
+        async video_add_lista (event,id_listaR,id_video ){
+            if (event == true){
+                try{
+                    var datas = {
+                        id_album:id_video,
+                        id_lista:id_listaR
+                    }  
+                    var data = await this.axios.post(this.url+'/video_lista',datas)  
+                    console.log(data)            
+                }catch(err){
+                    console.error(err)
+                }finally{
+                    this.get_video_lista(id_video)
+                }
+            }else{
+                try{                    
+                    var eliminar = await this.axios.delete(this.url+'/del_video_list/'+id_video+'/'+id_listaR)
+                    console,log(eliminar)
+                }catch(err){
+                    console.error(err);                    
+                }finally{
+                    this.get_video_lista(id_video);
+                    if(id_listaR == this.$route.params.id ){
+                        this.get_video_list();
+                    }
+                    
+                }
+            }
+            
+        },
+        after_delete(id_video){
+            this.$swal({
+            title: '¿Seguro que quieres elminar?',
+            text: 'No se puede revertir esta accion',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si, eliminar',
+            cancelButtonText: 'No, cancelar',
+            showCloseButton: true,
+            showLoaderOnConfirm: true
+            }).then((result) => {
+            if(result.value) {
+                /* this.$swal('Deleted', 'You successfully deleted this file', 'success') */
+               this.delete_video_lista(id_video)
+            } else {
+                this.$swal('Cancelado', 'El video no se elimino de la lista', 'info')
+            }
+            })
+        },
+        async delete_video_lista(id_video){
+            var erro = false
+            try{                    
+                var eliminar = await this.axios.delete(this.url+'/video_lista/'+id_video)
+                console.log(eliminar)
+            }catch(err){
+                console.error(err);   
+                erro = true               
+            }finally{      
+                if(erro == false){
+                    this.$swal('Eliminado', 'Se elimino', 'success')
+                    this.get_video_list();   
+                }else{
+                    this.$swal({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'No se pudo elminar los datos'                   
+                    })  
+                }      
+            }
         }
+        
     }
     
 }
@@ -127,10 +210,6 @@ export default {
         width: 100%;
         height: 100%;
         padding: 30px;               
-    }
-    [borderColor]{
-        background: rgb(196, 196, 196);
-        border-left-color: red;
     }
     .title-video{ 
         padding-left: 10px;

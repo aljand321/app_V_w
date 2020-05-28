@@ -29,9 +29,18 @@
             Mostrar mas
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" v-for="(list,index) of lista_reproduccion_vuex" :key="index" :href="'/Videos_listaR/'+list.id" >{{list.title}}</a>
-            <!-- <a class="dropdown-item" href="#">Another action</a> -->
-            
+            <div class="list-container" v-for="(list,index) of lista_reproduccion_vuex" :key="index">
+              <div class="list-title">
+                <a class="dropdown-item" :href="'/Videos_listaR/'+list.id" >{{list.title}} </a>
+              </div>
+              <div class="button-list">
+                <b-button @click="after_delete(list.id)" class="float-right" variant="light" size="sm" >
+                  <b-icon icon="trash" variant="danger" ></b-icon> 
+                </b-button>
+              </div>
+             
+            </div>            
+            <!-- <a class="dropdown-item" href="#">Another action</a> -->           
           </div>
         </li>
 
@@ -66,7 +75,7 @@
     }),
     methods:{
       ...mapMutations(['portada_c','is_home_boolean']),
-      ...mapActions(['get_list_reproduccion_vuex','video_search','portada_search']),
+      ...mapActions(['get_list_reproduccion_vuex','video_search','portada_search','delete_lista_reproduccion']),
       buscar_video(){
         this.video_search(this.search_data)
         //this.$router.push('/resultado')
@@ -78,12 +87,35 @@
         const path = '/'
         if (this.$route.path !== path) this.$router.push(path)
       },
+      delete_lista(id_lista){
+        this.delete_lista_reproduccion(id_lista);
+        this.$swal('Eliminado', 'Se elimino', 'success')
+      },
       click_list(){
         this.get_list_reproduccion_vuex();
       },
       portada_form(){
         this.portada_c(true)
-      }
+      },
+      after_delete(id_video){
+        this.$swal({
+        title: '¿Seguro que quieres elminar la lista de reproduccion?',
+        text: 'No se puede revertir esta accion',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si, eliminar',
+        cancelButtonText: 'No, cancelar',
+        showCloseButton: true,
+        showLoaderOnConfirm: true
+        }).then((result) => {
+          if(result.value) {
+              /* this.$swal('Deleted', 'You successfully deleted this file', 'success') */
+            this.delete_lista(id_video)
+          } else {
+              this.$swal('Cancelado', 'El video no se elimino de la lista', 'info')
+          }
+        })
+      },
     },
     computed:{
       ...mapState(['lista_reproduccion_vuex', 'is_home_state']),
@@ -91,3 +123,17 @@
   }
 
 </script>
+
+<style  scoped>
+  .list-container{
+    display: flex;         
+    position: relative;
+  }
+  .list-title{    
+    width: 80%;
+  }
+  .button-list{
+    padding-right: 5px;
+  }
+
+</style>

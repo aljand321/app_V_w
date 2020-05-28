@@ -56,20 +56,84 @@
                         </b-button>
                     </div>
                     <div  style="overflow-y: scroll;" class="list-card">
-                        <div  v-for="(list,index) of list_video" :key="index" :borderColor="css(index)" class="card mb-3" style="width: 100%;" 
-                            @click="video_click(index)" >
+                        <!-- <div  v-for="(list,index) of list_video" :key="index" :borderColor="css(index)" class="card mb-3" style="width: 100%;" 
+                           >
                             <div class="row no-gutters">
-                                <div cols="4">                                    
+                                <div cols="4"  @click="video_click(index)">                                    
                                     <img style="width:100px; height: 100%;" :src="url+'/'+list.videoPath">
                                 </div>
-                                <div cols="8">
+                                <div class="card-container" cols="8" @click="video_click(index)">
                                     <div class="card-body">
                                         <h6 lass="card-title" style="font-size: 100%">{{list.artista}} - {{list.nombre}}</h6>
                                         <p class="card-text"><small style="font-size: 100%" class="text-muted">{{list.album}}</small></p>
+                                        
+                                    </div>                           
+                                </div>
+                               
+                                <div class="btn-group" role="group">
+                                    <button @click="get_video_lista(list.id)" id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                       
+                                    </button>
+                                    
+                                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                        <b-form-checkbox class="goup-checkbox"
+                                            v-for="(list1, index) in list_reproduccion"                                        
+                                            :key="index"
+                                            @change="video_add_lista($event, list1.id, index, list.id )"
+                                            name="flavour-3a"
+                                            :checked="list1.data"
+                                        >
+                                            {{ list1.title }}
+                                        </b-form-checkbox>
+                                        
+      
+                                        <div class="dropdown-divider"></div>
+                                        <b-dropdown-item v-b-modal.modal-center>Crear nueva lista</b-dropdown-item>
                                     </div>
                                 </div>
                             </div>
+                        </div> -->
+                        <div class="card1-container" :borderColor="css(index)" v-for="(list,index) of list_video" :key="index" >
+                            <div class="card1-image"  @click="video_click(index)">                                
+                                <img style="width:100%; height: 100%;" :src="url+'/'+list.videoPath">
+                            </div>
+                            <div class="card1-title"  @click="video_click(index)">
+                                <p>{{list.artista}} - {{list.nombre}}</p>
+                                <p>{{list.album}}</p>
+                            </div>
+                            <div class="btn-group" role="group">
+                                    <button @click="get_video_lista(list.id)" id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                       
+                                    </button>
+                                    
+                                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                        <b-form-checkbox class="goup-checkbox"
+                                            v-for="(list1, index) in list_reproduccion"                                        
+                                            :key="index"
+                                            @change="video_add_lista($event, list1.id, index, list.id )"
+                                            name="flavour-3a"
+                                            :checked="list1.data"
+                                        >
+                                            {{ list1.title }}
+                                        </b-form-checkbox>
+                                        <!-- <div style="margin-left: 15px" v-for="(list1, index) in list_reproduccion" :key="index" class="custom-control custom-checkbox">
+                                            <template v-if="list1.data == true">
+                                                <input @change="video_add_lista(true, list1.id, index, list.id )" type="checkbox" checked class="custom-control-input" id="customCheck1">
+                                            </template>
+                                            <template v-else>
+                                                <input @change="video_add_lista(false, list1.id, index, list.id )" type="checkbox" class="custom-control-input" id="customCheck1">
+                                            </template>
+                                           
+                                            <label class="custom-control-label" for="customCheck1">{{ list1.title }}</label>
+                                        </div> -->
+
+                                        <div class="dropdown-divider"></div>
+                                        <b-dropdown-item v-b-modal.modal-center>Crear nueva lista</b-dropdown-item>
+                                    </div>
+                                </div>
                         </div>
+                        
+                        
                     </div>
                 </div>
            </b-col>
@@ -93,7 +157,7 @@
       id="modal-center"
       centered
       ref="modal"
-      title="Submit Your Name"
+      title="Nueva lista"
       @show="resetModal"
       @hidden="resetModal"
       @ok="handleOk"
@@ -101,7 +165,7 @@
       <form ref="form" @submit.stop.prevent="handleSubmit">
         <b-form-group
           :state="nameState"
-          label="Name"
+          label="Nombre"
           label-for="name-input"
           invalid-feedback="Name is required"
         >
@@ -109,6 +173,7 @@
             id="name-input"
             v-model="name"
             :state="nameState"
+            placeholder="Escribe el nombre de la lista..."
             required
           ></b-form-input>
         </b-form-group>
@@ -122,6 +187,7 @@ import { mapMutations } from 'vuex';
 import { mapActions } from 'vuex';
 var video = require('../assets/aoa.mp4');
 var data_url = require('../assets/p1.js');
+require('../assets/css/card.css')
 //https://bootstrap-vue.org/docs/components/modal#modals
 export default {
     data:() => ({
@@ -237,9 +303,14 @@ export default {
                     if(position < this.list_video.length){
                         this.video = this.list_video[position]
                         this.ver_video = this.list_video[position].video_albums[0].video
+                        
+                        this.id_video = this.list_video[position].id
+                       
                     }else{
                         this.video = this.list_video[0]
                         this.ver_video = this.list_video[0].video_albums[0].video
+                        this.get_video_lista(this.list_video[0].id)
+                        this.id_video = this.list_video[0].id
                     }
                 }
             }
@@ -295,21 +366,40 @@ export default {
             }catch(erro){
                 console.error(erro);                
             }finally{
-               
+               list.data = []
             }
         },
         //add video a la lista de reproduccion
-        async video_add_lista(event, id_listaR, position){
+        async add_lista_get(){
+            try{
+                var video_lista = await this.axios.get(this.url+'/video_lista')
+                this.video_lista_data = await video_lista.data
+            }catch(err){
+                console.error(err);
+                
+            }finally{
+                video_lista.data = []
+            }
+        },
+        async video_add_lista(event, id_listaR, position, id_video_in_card_list){
+            //console.log(event,id_listaR, position, id_video_in_card_list)
             if(event == true){
                 var error = false
-                var datas = {
-                    id_album:this.id_video,
-                    id_lista:id_listaR
+                if (isNaN(id_video_in_card_list)){
+                    var datas = {
+                        id_album:this.id_video,
+                        id_lista:id_listaR
+                    }
+                }else{
+                    var datas = {
+                        id_album:id_video_in_card_list,
+                        id_lista:id_listaR
+                    }
                 }
+                
                 try{
                     var data = await this.axios.post(this.url+'/video_lista',datas)
-                    var video_lista = await this.axios.get(this.url+'/video_lista')
-                    this.video_lista_data = video_lista.data
+                    this.add_lista_get();
                 }catch(erro){
                     console.error(erro);
                     
@@ -319,15 +409,22 @@ export default {
                 }
             }else{
                 var id_video_in_lista
-                for(var i = 0; i < this.video_lista_data.length; i++){
-                    if(this.video_lista_data[i].id_lista == id_listaR && this.video_lista_data[i].id_video == this.id_video){
-                        id_video_in_lista = this.video_lista_data[i].id
+                if (isNaN(id_video_in_card_list)){
+                    for(var i = 0; i < this.video_lista_data.length; i++){
+                        if(this.video_lista_data[i].id_lista == id_listaR && this.video_lista_data[i].id_video == this.id_video){
+                            id_video_in_lista = this.video_lista_data[i].id
+                        }
+                    }
+                }else{
+                    for(var i = 0; i < this.video_lista_data.length; i++){
+                        if(this.video_lista_data[i].id_lista == id_listaR && this.video_lista_data[i].id_video == id_video_in_card_list){
+                            id_video_in_lista = this.video_lista_data[i].id
+                        }
                     }
                 }
                 try{                    
                     var eliminar = await this.axios.delete(this.url+'/video_lista/'+id_video_in_lista)
-                    var video_lista = await this.axios.get(this.url+'/video_lista')
-                    this.video_lista_data = video_lista.data
+                    this.add_lista_get();
                 }catch(err){
                     console.error();                    
                 }finally{
@@ -336,19 +433,36 @@ export default {
             } 
            
         },
-        async get_video_lista(){   
+        async get_video_lista(id_video_in_list_card){   
             this.get_list_reproduccion();
             try{
                 var video_lista = await this.axios.get(this.url+'/video_lista')
-                this.video_lista_data = video_lista.data
+                this.video_lista_data = await video_lista.data
             }catch(erro){
                 console.error(erro);
             }finally{
-                for(var i = 0; i < video_lista.data.length; i++ ){
-                    if(video_lista.data[i].id_video == this.id_video  ){                     
-                        this.check(video_lista.data[i].id_lista)
+                
+                if(isNaN(id_video_in_list_card)){
+                   
+                    for(var i = 0; i < video_lista.data.length; i++ ){
+                        if(video_lista.data[i].id_video == this.id_video  ){                     
+                            this.check(video_lista.data[i].id_lista)
+                        }
+                    }
+                }else{
+                    
+                    for(var i = 0; i < video_lista.data.length; i++ ){
+                        if(video_lista.data[i].id_video == id_video_in_list_card ){                     
+                            this.check(video_lista.data[i].id_lista)
+                            /* for(var j = 0; j < this.list_reproduccion.length; j++){
+                                if(this.list_reproduccion[j].id == video_lista.data[i].id_lista){
+                                    this.list_reproduccion[j].data = true
+                                }
+                            } */
+                        }
                     }
                 }
+                video_lista.data = []
             }                  
         },
         check(id_lista){
@@ -386,10 +500,7 @@ export default {
         height: 100%;
         padding: 30px;               
     }
-    [borderColor]{
-        background: rgb(196, 196, 196);
-        border-left-color: red;
-    }
+    
     .title-video{ 
         padding-left: 10px;
         height: 40px;
@@ -404,6 +515,8 @@ export default {
     .goup-checkbox{        
         padding-left: 40px;
     }
+    
+
     .card:hover{
         border-color: rgb(82, 0, 0);
     }
@@ -512,6 +625,10 @@ export default {
     .list-card::-webkit-scrollbar-track {
         border-radius: 10px;  
     }
+
+    
+    
+
 
     
 </style>
