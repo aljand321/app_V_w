@@ -118,7 +118,11 @@ export default {
         async get_list (){
 
             try{
-                var getList = await this.axios.get(this.url+'/portada')
+                var getList = await this.axios.get(this.url+'/portada',{
+                    /* headers: {
+                        'Authorization': 'JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlciI6ImFsamFuZCIsImVtYWlsIjoiYWxqYW5kMzIxQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJhJDEwJG9IVHhpcDIzSXkxTHZyNW1JZHNOa09aeDNrMmIvN3ZOWlovYTA3OG5INmVZQnV1RmNKdFJ1IiwiY3JlYXRlZEF0IjoiMjAyMC0wNi0wMlQxODowMTowNi4yMDhaIiwidXBkYXRlZEF0IjoiMjAyMC0wNi0wMlQxODowMTowNi4yMDhaIiwiaWF0IjoxNTkxMTQyNjI0LCJleHAiOjE1OTM3MzQ2MjR9.SDL0Kk6Qtko6bkkuR6BK8vT1PFZzNAbcUZ3ttOwGjSI'
+                    } */
+                })
                 this.list_portada = getList.data               
             }catch (error){
                 console.log(error)

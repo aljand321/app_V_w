@@ -56,6 +56,11 @@ Vue.use(VueRouter)
     path: '/resultado',
     name : 'Resultado',
     component: () => import( '../views/searchResult.vue')
+  },
+  {
+    path: '/prueba',
+    name : 'Prueba',
+    component: () => import( '../views/prueba.vue')
   }
 ]
 
