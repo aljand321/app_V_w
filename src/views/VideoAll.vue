@@ -41,11 +41,12 @@
 var video = require('../assets/aoa.mp4')
 var data_url = require('../assets/p1.js')
 import axios from 'axios';
-
+import Cookies from 'js-cookie'
 
 export default {
     data:() => ({
         video,
+        data_t: JSON.parse(Cookies.get('Tdata')),
         url: data_url.default.url,
         video_list:[],
         last_video:{
@@ -67,7 +68,11 @@ export default {
         }, */
         async get_list_videos(){
             try{
-                var videos = await this.axios.get(this.url+'/album')
+                var videos = await this.axios.get(this.url+'/album',{
+                    headers: {
+                        'Authorization': this.data_t.tk
+                    }
+                })
                 
                 var arr = []
                 for(var i = 0; i < videos.data.length; i++){

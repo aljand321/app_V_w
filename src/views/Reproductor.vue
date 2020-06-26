@@ -185,6 +185,7 @@
 <script>
 import { mapMutations } from 'vuex';
 import { mapActions } from 'vuex';
+import Cookies from 'js-cookie'
 var video = require('../assets/aoa.mp4');
 var data_url = require('../assets/p1.js');
 require('../assets/css/card.css')
@@ -192,6 +193,7 @@ require('../assets/css/card.css')
 export default {
     data:() => ({
         video1:video,
+        data_t: JSON.parse(Cookies.get('Tdata')),
         video:{},
         ver_video:'',
         url:data_url.default.url,
@@ -219,7 +221,11 @@ export default {
         async one_video(){
             var id_portada
             try{
-                var video_one = await this.axios.get(this.url+'/album/'+this.id_video)
+                var video_one = await this.axios.get(this.url+'/album/'+this.id_video,{
+                    headers: {
+                        'Authorization': this.data_t.tk
+                    }
+                })
                 this.video = await video_one.data[0]
                 this.ver_video = await video_one.data[0].video_albums[0].video
                 id_portada = video_one.data[0].idPortada
@@ -232,7 +238,11 @@ export default {
         },
         async first_videos_lista(id_portada){
             try{
-                var album_videos = await this.axios.get(this.url+'/album_portada/'+id_portada)
+                var album_videos = await this.axios.get(this.url+'/album_portada/'+id_portada,{
+                    headers: {
+                        'Authorization': this.data_t.tk
+                    }
+                })
                 var position = 0;
                 while(album_videos.data.length !== 0){
                     if(this.list_video[0].id != album_videos.data[position].id){
@@ -258,7 +268,11 @@ export default {
         
         async get_list_video(){
             try{
-                var list = await this.axios.get(this.url+'/album')
+                var list = await this.axios.get(this.url+'/album',{
+                    headers: {
+                        'Authorization': this.data_t.tk
+                    }
+                })
                 
                 var p = 0, ver_delete=[];
                 for(var i = 0; i < this.list_video.length ; i++){
@@ -333,6 +347,7 @@ export default {
         },
         async handleSubmit() {
             // Exit when the form isn't valid
+            console.log(this.data_t.tk)
             if (!this.checkFormValidity()) {
                 return
             }
@@ -340,7 +355,13 @@ export default {
             var error = false
             var datas= { title:this.name }
             try{
-                var data = await this.axios.post(this.url+'/lista_reproduccion',datas)
+                var data = await this.axios.post(this.url+'/lista_reproduccion/'+this.data_t.Num,
+                datas,{
+                    headers: {
+                        'Authorization': this.data_t.tk
+                    }
+                })
+                
                 
             }catch(erro){
                 console.error(erro);
@@ -360,7 +381,11 @@ export default {
         },
         async get_list_reproduccion(){
             try{
-                var list = await this.axios.get(this.url+'/lista_reproduccion')
+                var list = await this.axios.get(this.url+'/lista_reproduccion',{
+                    headers: {
+                        'Authorization': this.data_t.tk
+                    }
+                })
                 this.list_reproduccion = list.data.data
                 
             }catch(erro){
@@ -372,7 +397,11 @@ export default {
         //add video a la lista de reproduccion
         async add_lista_get(){
             try{
-                var video_lista = await this.axios.get(this.url+'/video_lista')
+                var video_lista = await this.axios.get(this.url+'/video_lista',{
+                    headers: {
+                        'Authorization': this.data_t.tk
+                    }
+                })
                 this.video_lista_data = await video_lista.data
             }catch(err){
                 console.error(err);
@@ -398,7 +427,11 @@ export default {
                 }
                 
                 try{
-                    var data = await this.axios.post(this.url+'/video_lista',datas)
+                    var data = await this.axios.post(this.url+'/video_lista',datas,{
+                        headers: {
+                            'Authorization': this.data_t.tk
+                        }
+                    })
                     this.add_lista_get();
                 }catch(erro){
                     console.error(erro);
@@ -423,7 +456,11 @@ export default {
                     }
                 }
                 try{                    
-                    var eliminar = await this.axios.delete(this.url+'/video_lista/'+id_video_in_lista)
+                    var eliminar = await this.axios.delete(this.url+'/video_lista/'+id_video_in_lista,{
+                        headers: {
+                            'Authorization': this.data_t.tk
+                        }
+                    })
                     this.add_lista_get();
                 }catch(err){
                     console.error();                    
@@ -436,7 +473,11 @@ export default {
         async get_video_lista(id_video_in_list_card){   
             this.get_list_reproduccion();
             try{
-                var video_lista = await this.axios.get(this.url+'/video_lista')
+                var video_lista = await this.axios.get(this.url+'/video_lista',{
+                    headers: {
+                        'Authorization': this.data_t.tk
+                    }
+                })
                 this.video_lista_data = await video_lista.data
             }catch(erro){
                 console.error(erro);

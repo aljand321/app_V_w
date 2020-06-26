@@ -200,6 +200,7 @@
 <script>
 
 import axios from 'axios';
+import Cookies from 'js-cookie'
 var data_url = require('../../assets/p1.js')
 import VueCoreVideoPlayer from 'vue-core-video-player';
 var NO_image = require ('../../assets/noImage.png')
@@ -210,6 +211,7 @@ export default {
     
     data:() => ({
         url: data_url.default.url,
+        data_t: JSON.parse(Cookies.get('Tdata')),
         id_portada:'',
         file_data:'',
         form_array:[
@@ -261,7 +263,11 @@ export default {
                     anio: this.one_video_selected[3].text,
                     genero: this.one_video_selected[4].text,
                 }
-                var update_data = await this.axios.put(this.url+'/album/'+this.one_video_selected[5].id, data)
+                var update_data = await this.axios.put(this.url+'/album/'+this.one_video_selected[5].id,{
+                    headers: {
+                        'Authorization': this.data_t.tk
+                    }
+                }, data)
                 if(update_data.data.success == true){
                    error = false 
                 }else{
@@ -315,7 +321,11 @@ export default {
             
         },
         async get_list(){
-            var lista = await this.axios.get(this.url+'/album_portada/'+this.id_portada)
+            var lista = await this.axios.get(this.url+'/album_portada/'+this.id_portada,{
+                headers: {
+                    'Authorization': this.data_t.tk
+                }
+            })
             var arr = []
             for(var i = 0; i < lista.data.length; i++){
                 arr.push({
@@ -332,7 +342,11 @@ export default {
         async mostrar_video(id_video){    
             var error = false      
             try{
-                var one_video = await this.axios.get(this.url+'/album/'+id_video)
+                var one_video = await this.axios.get(this.url+'/album/'+id_video,{
+                    headers: {
+                        'Authorization': this.data_t.tk
+                    }
+                })
                
                 this.one_video_album = one_video.data[0].video_albums[0]
                 if(one_video.data.length > 0){                    
@@ -435,7 +449,7 @@ export default {
                     data,
                     {
                         headers: {
-                            'Content-Type': 'multipart/form-data'
+                            'Authorization': this.data_t.tk
                         }
                     })
                     if(msg.data.success == true){
@@ -480,7 +494,7 @@ export default {
                     data_form,
                     {
                         headers: {
-                            'Content-Type': 'multipart/form-data'
+                            'Authorization': this.data_t.tk
                         }
                     })
                 
@@ -518,7 +532,11 @@ export default {
         async elimar_video_album(id){
             var erro = false
             try{
-                var eliminar = this.axios.delete(this.url+'/delte_video_album_data/'+id)
+                var eliminar = this.axios.delete(this.url+'/delte_video_album_data/'+id,{
+                    headers: {
+                        'Authorization': this.data_t.tk
+                    }
+                })
             }catch(err){
                 console.error(err)
                 erro = true
@@ -534,7 +552,11 @@ export default {
         async eliminar_video(id){
             var error = false
             try{
-                var data = await this.axios.delete(this.url+'/album/'+id)
+                var data = await this.axios.delete(this.url+'/album/'+id,{
+                    headers: {
+                        'Authorization': this.data_t.tk
+                    }
+                })
                 if(data.data.success != null){                 
                     error = false
                 }else{

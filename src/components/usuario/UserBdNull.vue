@@ -3,8 +3,8 @@
         
         
         <transition name="show-alert" v-if="show.erro">
-            <transition-group tag="li" >
-                <b-alert  class="alert"  v-for="(list, i) of msg_error" :key="i" show variant="danger">Ya se creo el rol {{list.nombre}}</b-alert> 
+            <transition-group v-for="(list, index) of msg_error" :key="index"  tag="li"  >
+                <b-alert  class="alert" show variant="danger">Ya se creo el rol {{list.nombre}}</b-alert> 
             </transition-group>
         </transition>     
         <transition name="slide-fade">
@@ -162,7 +162,7 @@ export default {
             }, 3000);
             
         },
-        register_user(e){
+        async register_user(e){
             e.preventDefault();
             var error = false
             
@@ -180,14 +180,51 @@ export default {
                 console.log("no son iguales")
             }
             if(error == false){
+                var params = {
+                    user: this.usuario_data[0].text,
+                    email: this.usuario_data[1].text,
+                    password: this.usuario_data[2].text
+                }, id_user, erro_post = false;
                 try{
-
+                    var data = await this.axios.post(this.url+'/register', params)
+                    console.log(data.data)
+                    id_user = data.data.data.id
                 }catch(err){
-                    console.error(err);                
+                    console.error(err);  
+                    if(err){
+                        erro_post = true
+                    }              
                 }finally{
-
+                    if (erro_post == false){
+                        this.add_role_user(id_user)
+                    }else{
+                        console.log("no se pudo insertar los datos")
+                    }
                 }
             }            
+        },
+        async add_role_user(id){
+            console.log(id, " esto es ")
+            var erro = false
+            try{
+                var data = await this.axios.post(this.url+'/user_role',{
+                    user_id: id,
+                    role_id: '1'
+                })
+            }catch(err){
+                console.error(err);
+                if(err){
+                    erro = true;
+                }                
+            }finally{
+                if(erro == false){
+                    console.log("El usario creado tiene el rol de administrador")
+                    const path = '/login'
+                    if (this.$route.path !== path) this.$router.push(path)
+                }else{
+                    console.log("no se pudo insertar el rol")
+                }
+            }
         },
         state(){      
             if(this.usuario_data[3].success == false || this.usuario_data[3].text.length > 0){
@@ -204,8 +241,7 @@ export default {
             }           
         }         
     },
-    computed:{
-           
+    computed:{  
     }
 }
 </script>

@@ -82,6 +82,8 @@
 import axios from 'axios';
 import { mapState } from 'vuex';
 import {mapMutations} from 'vuex'
+import Cookies from 'js-cookie'
+
 var data_url = require('../assets/p1.js')
 var admin_data  = require('../assets/adminData.js')
 export default {
@@ -91,7 +93,8 @@ export default {
             phone:false,
             url: data_url.default.url,
             list_portada:[],
-            admin:  admin_data.default.access
+            admin:  admin_data.default.access,
+            data_t: JSON.parse(Cookies.get('Tdata'))
         }
     },
     created(){
@@ -116,12 +119,12 @@ export default {
 
         
         async get_list (){
-
+            
             try{
                 var getList = await this.axios.get(this.url+'/portada',{
-                    /* headers: {
-                        'Authorization': 'JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlciI6ImFsamFuZCIsImVtYWlsIjoiYWxqYW5kMzIxQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJhJDEwJG9IVHhpcDIzSXkxTHZyNW1JZHNOa09aeDNrMmIvN3ZOWlovYTA3OG5INmVZQnV1RmNKdFJ1IiwiY3JlYXRlZEF0IjoiMjAyMC0wNi0wMlQxODowMTowNi4yMDhaIiwidXBkYXRlZEF0IjoiMjAyMC0wNi0wMlQxODowMTowNi4yMDhaIiwiaWF0IjoxNTkxMTQyNjI0LCJleHAiOjE1OTM3MzQ2MjR9.SDL0Kk6Qtko6bkkuR6BK8vT1PFZzNAbcUZ3ttOwGjSI'
-                    } */
+                    headers: {
+                        'Authorization': this.data_t.tk
+                    }
                 })
                 this.list_portada = getList.data               
             }catch (error){
@@ -133,11 +136,15 @@ export default {
         },
         redirect(id){
             this.$router.push('/portada/'+id)
-             this.portada_c(false)
+            this.portada_c(false)
         },
 
         delete_portada(id){                       
-            this.axios.delete(this.url+'/portada/'+id)
+            this.axios.delete(this.url+'/portada/'+id,{
+                headers: {
+                    'Authorization': this.data_t.tk
+                }
+            })
             .then(data  => {
                 console.log(data.data, " esto es el error que quiero ver")
                 if (data.data.success == true){
@@ -147,12 +154,13 @@ export default {
                 
             })
             .catch(error => {
+                console.error(error)
                 if(error){
-                  this.$swal({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'No se pudo elminar los datos'                   
-                })  
+                    this.$swal({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'No se pudo elminar los datos'                   
+                    })  
                 }
             })
         },
@@ -180,8 +188,12 @@ export default {
         async selected(id_portada){
             var erro = false
             try{    
-                var respuesta = await this.axios.get(this.url+'/album_portada/'+id_portada)
-                console.log(respuesta.data.length, " esto es la respuesta", " id: ", id_portada)
+                var respuesta = await this.axios.get(this.url+'/album_portada/'+id_portada,{
+                    headers: {
+                        'Authorization': this.data_t.tk
+                    }
+                })
+                //console.log(respuesta.data.length, " esto es la respuesta", " id: ", id_portada)
                 if(respuesta.data.length == 0){
                     erro = true
                 }

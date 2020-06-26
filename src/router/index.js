@@ -61,7 +61,22 @@ Vue.use(VueRouter)
     path: '/prueba',
     name : 'Prueba',
     component: () => import( '../views/prueba.vue')
-  }
+  },
+  {
+    path: '/login',
+    name : 'Login',
+    component: () => import( '../views/Login.vue')
+  },
+  {
+    path: '/user',
+    name : 'User',
+    component: () => import( '../views/user_contacto.vue')
+  },
+  {
+    path: '/registrar',
+    name : 'Registrar',
+    component: () => import( '../views/Registrar.vue')
+  },
 ]
 
 const router = new VueRouter({

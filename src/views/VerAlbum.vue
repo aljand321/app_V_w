@@ -45,9 +45,10 @@
     </div>
 </template>
 <script>
-var video2 = require('../assets/aoa.mp4')
-var data_url = require('../assets/p1.js')
-var admin_data  = require('../assets/adminData.js')
+var video2 = require('../assets/aoa.mp4');
+var data_url = require('../assets/p1.js');
+var admin_data  = require('../assets/adminData.js');
+import Cookies from 'js-cookie';
 export default {
     data:()=> ({
         admin: admin_data.default.access,
@@ -57,7 +58,8 @@ export default {
         artista_video_name:'',
         url:data_url.default.url,
         id_portada: '',
-        videos_list:[]        
+        videos_list:[],
+        data_t: JSON.parse(Cookies.get('Tdata'))        
     }),
     created(){
         this.id_portada = this.$route.params.id
@@ -73,7 +75,11 @@ export default {
         async list_video(){
 
             try{
-                var videos = await this.axios.get(this.url+'/album_portada/'+this.id_portada)
+                var videos = await this.axios.get(this.url+'/album_portada/'+this.id_portada,{
+                    headers: {
+                        'Authorization': this.data_t.tk
+                    }
+                })
                 
                 var arr = []
                 for(var i = 0; i < videos.data.length; i++){

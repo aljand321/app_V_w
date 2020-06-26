@@ -38,6 +38,7 @@
 import {mapMutations} from 'vuex'
 
 import axios from 'axios';
+import Cookies from 'js-cookie'
 var data_url = require('../../assets/p1.js')
 var video1 = require('../../assets/aoa.mp4')
 export default {
@@ -47,7 +48,8 @@ export default {
         url: data_url.default.url,
         video:video1,
         id_portada:'',
-        list_data:[]
+        list_data:[],
+        data_t: JSON.parse(Cookies.get('Tdata'))
     }),
     created(){
         console.log(this.$route.params.id, " desde lista ")
@@ -88,7 +90,11 @@ export default {
             
         },
         async get_list(){
-            var lista = await this.axios.get(this.url+'/album_portada/'+this.id_portada)
+            var lista = await this.axios.get(this.url+'/album_portada/'+this.id_portada,{
+                headers: {
+                    'Authorization': this.data_t.tk
+                }
+            })
             var arr = []
             for(var i = 0; i < lista.data.length; i++){
                 arr.push({
@@ -105,7 +111,11 @@ export default {
         async mostrar_video(id_video){    
             var error = false      
             try{
-                var one_video = await this.axios.get(this.url+'/album/'+id_video)
+                var one_video = await this.axios.get(this.url+'/album/'+id_video,{
+                    headers: {
+                        'Authorization': this.data_t.tk
+                    }
+                })
                 if(one_video.data.length > 0){                    
                     this.insert_data_video_one(one_video.data[0])
                     error = false

@@ -12,6 +12,7 @@
         <b-nav-item @click="is_home_boolean(true)" :to="'/'">Home</b-nav-item>
         <b-nav-item @click="is_home_boolean(false)" :to="'/lista_videos'">Videos</b-nav-item>
         <b-nav-item v-if="admin" @click="portada_form(),is_home_boolean(false)" :to="'/portada'">Portada</b-nav-item>
+        <b-nav-item @click="is_home_boolean(false)" :to="'/user'">User</b-nav-item>
       </b-navbar-nav>
 
       <!-- Right aligned nav items -->

@@ -66,13 +66,15 @@
 <script>
 var data_url = require('../assets/p1.js')
 require('../assets/css/card.css')
+import Cookies from 'js-cookie'
 export default {
     name:"Reproductor",
     data:()=>({
         url:data_url.default.url,
         video:{},
         list_video:[],
-        list_reproduccion :[]
+        list_reproduccion :[],
+        data_t: JSON.parse(Cookies.get('Tdata'))
         
     }),
     created(){
@@ -81,7 +83,11 @@ export default {
     
     methods:{
         get_video_list(){
-            this.axios.get(this.url+'/video_lista/'+this.$route.params.id)
+            this.axios.get(this.url+'/video_lista/'+this.$route.params.id,{
+                headers: {
+                    'Authorization': this.data_t.tk
+                }
+            })
             .then(videos => {                
                 this.list_video = videos.data
                 this.video = videos.data[0]
@@ -119,7 +125,11 @@ export default {
         },
         async get_video_lista(id_video){            
             try{
-                var data = await this.axios.get(this.url+'/videos_of_lista/'+id_video)
+                var data = await this.axios.get(this.url+'/videos_of_lista/'+id_video,{
+                    headers: {
+                        'Authorization': this.data_t.tk
+                    }
+                })
                 this.list_reproduccion = data.data                
             }catch(err){  
                 console.error(err)      
@@ -135,7 +145,11 @@ export default {
                         id_album:id_video,
                         id_lista:id_listaR
                     }  
-                    var data = await this.axios.post(this.url+'/video_lista',datas)  
+                    var data = await this.axios.post(this.url+'/video_lista',datas,{
+                        headers: {
+                            'Authorization': this.data_t.tk
+                        }
+                    })  
                     console.log(data)            
                 }catch(err){
                     console.error(err)
@@ -144,7 +158,11 @@ export default {
                 }
             }else{
                 try{                    
-                    var eliminar = await this.axios.delete(this.url+'/del_video_list/'+id_video+'/'+id_listaR)
+                    var eliminar = await this.axios.delete(this.url+'/del_video_list/'+id_video+'/'+id_listaR,{
+                        headers: {
+                            'Authorization': this.data_t.tk
+                        }
+                    })
                     console,log(eliminar)
                 }catch(err){
                     console.error(err);                    
@@ -180,7 +198,11 @@ export default {
         async delete_video_lista(id_video){
             var erro = false
             try{                    
-                var eliminar = await this.axios.delete(this.url+'/video_lista/'+id_video)
+                var eliminar = await this.axios.delete(this.url+'/video_lista/'+id_video,{
+                    headers: {
+                        'Authorization': this.data_t.tk
+                    }
+                })
                 console.log(eliminar)
             }catch(err){
                 console.error(err);   

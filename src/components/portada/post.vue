@@ -125,7 +125,7 @@
     
     import {mapState} from 'vuex';
     import {mapMutations} from 'vuex';
-
+    import Cookies from 'js-cookie'
     var data_url = require('../../assets/p1.js')
     var NO_image = require ('../../assets/noImage.png')
     var video = require ('../../assets/aoa.mp4')
@@ -133,6 +133,7 @@
         name: 'post',          
         data:() => ({
             url: data_url.default.url,
+            data_t: JSON.parse(Cookies.get('Tdata')),
             video: video,
             isHovered: false,
             file:'',
@@ -173,7 +174,11 @@
             async get_one_portada(){
                 try{
                     this.showAlert(10000*5)
-                    var one_portada = await this.axios.get(this.url + '/portada/' + this.id_params )
+                    var one_portada = await this.axios.get(this.url + '/portada/' + this.id_params,{
+                        headers: {
+                            'Authorization': this.data_t.tk
+                        }
+                    } )
                     this.get_one_p = one_portada.data.data[0]
                     console.log(this.get_one_p, " esto es  <<<<<<<<<<<<")   
                 }catch(erro){
@@ -199,7 +204,13 @@
                         title:this.get_one_p.title,
                         description:this.get_one_p.description
                     }
-                    var upadte_data = await this.axios.put(this.url + '/portada/' + this.$route.params.id, upadte)
+                    var upadte_data = await this.axios.put(this.url + '/portada/' + this.$route.params.id,
+                    {
+                        headers: {
+                            'Authorization': this.data_t.tk
+                        }, 
+                    },
+                    upadte)
                     
                 }catch(erro){
                     console.log(erro)
@@ -231,11 +242,11 @@
                     params_data.append('music', this.data_image)
                     try{
                         this.showAlert(10000*5)
-                        var enviar = await this.axios.post(this.url+'/portada',
+                        var enviar = await this.axios.post(this.url+'/portada/'+this.data_t.Num,
                         params_data,
                         {
                             headers: {
-                                'Content-Type': 'multipart/form-data'
+                                'Authorization': this.data_t.tk
                             }
                         }) 
 

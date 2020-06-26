@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import Cookies from 'js-cookie'
 
 Vue.use(Vuex)
 var url = require('../assets/p1.js')
@@ -14,7 +15,7 @@ export default new Vuex.Store({
       anio:'',
       genero:'',
       videoPath:'',
-      estado:false
+      estado:false      
       
     },
     //esto es la lista de reproduccion
@@ -58,23 +59,44 @@ export default new Vuex.Store({
   },
   actions: {
     get_list_reproduccion_vuex: async function({commit}){
-      const data = await fetch(url.default.url+'/lista_reproduccion')
+      var data_t = JSON.parse(Cookies.get('Tdata'))
+      const data = await fetch(url.default.url+'/lista_reproduccion',{
+        headers: {
+          'Authorization': data_t.tk
+        }
+      })
       const get_data = await data.json();
       commit('llenar_lista_reproducion', get_data.data)
     },
     delete_lista_reproduccion: async function({commit}, id_lista){ // funcion que elimina una lista de reproducion del componente tolbar
-      const data = await fetch(url.default.url+'/lista_reproduccion/'+id_lista,{method: 'DELETE'})
+      var data_t = JSON.parse(Cookies.get('Tdata'))
+      const data = await fetch(url.default.url+'/lista_reproduccion/'+id_lista,{
+        method: 'DELETE',
+        headers: {
+          'Authorization': data_t.tk
+        }
+      })
       const data_delete = await data.json()
       console.log(data_delete)
     },
     video_search: async function({commit},params ){
-      const data = await fetch(url.default.url+'/buscador?nombre='+params)
+      var data_t = JSON.parse(Cookies.get('Tdata'))
+      const data = await fetch(url.default.url+'/buscador?nombre='+params,{
+        headers: {
+          'Authorization': data_t.tk
+        }
+      })
       const resultado = await data.json()
       commit('inserte_video_serach', resultado)
     
     },
     portada_search: async function({commit},params){
-      const data = await fetch(url.default.url+'/buscar_portada?title='+params)
+      var data_t = JSON.parse(Cookies.get('Tdata'))
+      const data = await fetch(url.default.url+'/buscar_portada?title='+params,{
+        headers: {
+          'Authorization': data_t.tk
+        }
+      })
       const res = await data.json()
       commit('insert_result_search_portada', res)
     }
