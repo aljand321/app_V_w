@@ -20,13 +20,13 @@
         </div>
         <div class="new-cards">
             <div class="card" v-for="(list,index) of video_list" :key="index" >
-                <img class="card-img" :src="url+'/'+list.videoPath"> 
+                <img class="card-img" :src="url+'/'+list.albun.videoPath"> 
                 
                 <div  class="card-img-overlay text-white d-flex flex-column justify-content-center">
-                    <h4 style="color: white;" class="card-title">{{list.artista}}</h4>                                                    
-                    <h6 style="color: white;" class="card-subtitle mb-2">{{list.nombre}}</h6>
+                    <h4 style="color: white;" class="card-title">{{list.albun.artista}}</h4>                                                    
+                    <h6 style="color: white;" class="card-subtitle mb-2">{{list.albun.nombre}}</h6>
                     <div class="link d-flex">
-                        <b-button @click="video_click(list.id)"  variant="outline-dark" class="mb-2">
+                        <b-button @click="video_click(list.albun.id)"  variant="outline-dark" class="mb-2">
                             <b-icon icon="play" aria-hidden="true"></b-icon> 
                         </b-button>                                    
                     </div>
@@ -67,25 +67,20 @@ export default {
             }
         }, */
         async get_list_videos(){
+            console.log(this.data_t.Num, " id del usuario")
             try{
-                var videos = await this.axios.get(this.url+'/album',{
+                var videos = await this.axios.get(this.url+'/album/'+this.data_t.Num,{
                     headers: {
                         'Authorization': this.data_t.tk
                     }
                 })
-                
-                var arr = []
-                for(var i = 0; i < videos.data.length; i++){
-                    if(videos.data[i].video_albums.length > 0){
-                        arr.push(videos.data[i])
-                    }                    
-                }
-                this.video_list = arr
-                var last_position = arr.length
-                this.last_video.artista = arr[last_position-1].artista
-                this.last_video.name = arr[last_position-1].nombre
-                this.last_video.video = arr[last_position-1].video_albums[0].video
-                this.last_video.id = arr[last_position-1].id
+                console.log(videos.data, " esto es la respuesta <<<<<<<<<<")
+                this.video_list = videos.data                
+                var last_position = videos.data.length
+                this.last_video.artista = videos.data[last_position-1].albun.artista
+                this.last_video.name = videos.data[last_position-1].albun.nombre
+                this.last_video.video = videos.data[last_position-1].video
+                this.last_video.id = videos.data[last_position-1].albun.id
                 console.log(last_position-1)
             }catch(err){
                 console.error(err);
@@ -95,6 +90,7 @@ export default {
             }
         },
         video_click(id_video){
+            console.log(id_video)
             this.$router.push('/ver_video/'+id_video)
         }
     }

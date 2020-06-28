@@ -121,7 +121,7 @@ export default {
         async get_list (){
             
             try{
-                var getList = await this.axios.get(this.url+'/portada',{
+                var getList = await this.axios.get(this.url+'/portada_user/'+this.data_t.Num,{
                     headers: {
                         'Authorization': this.data_t.tk
                     }

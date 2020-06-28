@@ -219,13 +219,15 @@ export default {
     methods:{
         ...mapActions(['get_list_reproduccion_vuex']),
         async one_video(){
+            console.log("esto es el id <<<>>>>>>>>>>>  ", this.$route.params.id)
             var id_portada
             try{
-                var video_one = await this.axios.get(this.url+'/album/'+this.id_video,{
+                var video_one = await this.axios.get(this.url+'/album_one/'+this.$route.params.id,{
                     headers: {
                         'Authorization': this.data_t.tk
                     }
                 })
+                console.log(video_one, " video one ")
                 this.video = await video_one.data[0]
                 this.ver_video = await video_one.data[0].video_albums[0].video
                 id_portada = video_one.data[0].idPortada
@@ -237,12 +239,14 @@ export default {
             }
         },
         async first_videos_lista(id_portada){
+            console.log(id_portada, "  id_portada <<<<<<<< ")
             try{
                 var album_videos = await this.axios.get(this.url+'/album_portada/'+id_portada,{
                     headers: {
                         'Authorization': this.data_t.tk
                     }
                 })
+                console.log(album_videos, " album_videos <<< ")
                 var position = 0;
                 while(album_videos.data.length !== 0){
                     if(this.list_video[0].id != album_videos.data[position].id){
@@ -261,14 +265,14 @@ export default {
                 
             }finally{
                 this.get_list_video();
-                album_videos = {}
+                //album_videos = {}
             }
             
         },
         
         async get_list_video(){
             try{
-                var list = await this.axios.get(this.url+'/album',{
+                var list = await this.axios.get(this.url+'/album/'+this.data_t.Num,{
                     headers: {
                         'Authorization': this.data_t.tk
                     }
@@ -277,7 +281,7 @@ export default {
                 var p = 0, ver_delete=[];
                 for(var i = 0; i < this.list_video.length ; i++){
                     for(var j = 0; j < list.data.length; j++){
-                        if(this.list_video[i].id == list.data[j].id){
+                        if(this.list_video[i].id == list.data[j].albun.id){
                             list.data.splice(j,1)
                         }
                     }                    
@@ -286,9 +290,22 @@ export default {
                 console.error(err);                
             }finally{
                 for(var i = 0; i < list.data.length; i++){
-                    if (list.data[i].video_albums.length > 0){
-                        this.list_video.push(list.data[i])
-                    }
+                        this.list_video.push({
+                            id: list.data[i].albun.id,
+                            album: list.data[i].albun.album,
+                            nombre: list.data[i].albun.nombre,
+                            artista: list.data[i].albun.artista,
+                            anio: list.data[i].albun.anio,
+                            genero: list.data[i].albun.genero,
+                            videoPath: list.data[i].albun.videoPath,
+                            idPortada: list.data[i].albun.idPortada,
+                            video_albums: [
+                                {
+                                    video: list.data[i].video
+                                }
+                            ]
+                        })
+                    
                     
                 }
                 list = {}
@@ -381,7 +398,7 @@ export default {
         },
         async get_list_reproduccion(){
             try{
-                var list = await this.axios.get(this.url+'/lista_reproduccion',{
+                var list = await this.axios.get(this.url+'/lista_reproduccion/'+this.data_t.Num,{
                     headers: {
                         'Authorization': this.data_t.tk
                     }

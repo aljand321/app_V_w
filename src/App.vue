@@ -2,6 +2,9 @@
   <div id="app">
     <Tolbar v-if ="is_logged"/>
     <UserBdNull v-if="firts_user_null"/>
+    <!-- <b-card class="mt-3" header="Form Data Result">
+      <pre class="m-0">{{ $data }}</pre>
+    </b-card> -->
     <router-view v-if ="bol"/>   
   </div>
 </template>
@@ -34,6 +37,7 @@
         try{
           var data = await this.axios.get(this.url+'/user_length')
           this.firts_user_null = await data.data.success
+          console.log(data.data, " esto es la repuesta que queiro ver")
         }catch(err){
           console.error(err);
         }finally{
@@ -50,7 +54,7 @@
               this.is_logged = Tdata.is_logged
               const path = '/'
               if (this.$route.path !== path) this.$router.push(path)
-            }            
+            }           
           }
         }
       },

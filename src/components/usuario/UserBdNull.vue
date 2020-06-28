@@ -2,9 +2,9 @@
     <div :style="{ backgroundImage: 'url(' + fondo + ')' }" class="container1">
         
         
-        <transition name="show-alert" v-if="show.erro">
-            <transition-group v-for="(list, index) of msg_error" :key="index"  tag="li"  >
-                <b-alert  class="alert" show variant="danger">Ya se creo el rol {{list.nombre}}</b-alert> 
+        <transition  name="show-alert" v-if="show.erro">
+            <transition-group  tag="li"  >
+                <b-alert v-for="(list, index) of msg_error" :key="index"  class="alert" show variant="danger">Ya se creo el rol {{list.nombre}}</b-alert> 
             </transition-group>
         </transition>     
         <transition name="slide-fade">
@@ -183,7 +183,8 @@ export default {
                 var params = {
                     user: this.usuario_data[0].text,
                     email: this.usuario_data[1].text,
-                    password: this.usuario_data[2].text
+                    password: this.usuario_data[2].text,
+                    password2: this.usuario_data[3].text
                 }, id_user, erro_post = false;
                 try{
                     var data = await this.axios.post(this.url+'/register', params)
@@ -219,8 +220,7 @@ export default {
             }finally{
                 if(erro == false){
                     console.log("El usario creado tiene el rol de administrador")
-                    const path = '/login'
-                    if (this.$route.path !== path) this.$router.push(path)
+                    window.location.replace('/login')
                 }else{
                     console.log("no se pudo insertar el rol")
                 }

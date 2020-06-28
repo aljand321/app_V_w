@@ -60,7 +60,7 @@ export default new Vuex.Store({
   actions: {
     get_list_reproduccion_vuex: async function({commit}){
       var data_t = JSON.parse(Cookies.get('Tdata'))
-      const data = await fetch(url.default.url+'/lista_reproduccion',{
+      const data = await fetch(url.default.url+'/lista_reproduccion/'+data_t.Num ,{
         headers: {
           'Authorization': data_t.tk
         }
