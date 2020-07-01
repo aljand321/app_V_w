@@ -188,6 +188,7 @@ import { mapActions } from 'vuex';
 import Cookies from 'js-cookie'
 var video = require('../assets/aoa.mp4');
 var data_url = require('../assets/p1.js');
+import { ruta } from '../auth.js'
 require('../assets/css/card.css')
 //https://bootstrap-vue.org/docs/components/modal#modals
 export default {
@@ -215,6 +216,8 @@ export default {
     },
     mounted(){
         this.get_video_lista();
+        console.log(this.$route.path, " esto es lo que quiero ver <<<<<<<<<<<<<<<<<<<<< ")
+        ruta(this.$route.path)
     },
     methods:{
         ...mapActions(['get_list_reproduccion_vuex']),

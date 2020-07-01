@@ -32,7 +32,7 @@
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <div class="list-container" v-for="(list,index) of lista_reproduccion_vuex" :key="index">
               <div class="list-title">
-                <a class="dropdown-item" :href="'/Videos_listaR/'+list.id" >{{list.title}} </a>
+                <a class="dropdown-item" @click="videos_lista(list.id)" >{{list.title}} </a>
               </div>
               <div class="button-list">
                 <b-button @click="after_delete(list.id)" class="float-right" variant="light" size="sm" >
@@ -65,6 +65,7 @@
   import { mapState } from 'vuex';
   import { mapMutations } from 'vuex'
   import { mapActions } from 'vuex'
+  import { ruta } from '../../auth'
   var data_url = require('../../assets/p1.js')
   var admin_data  = require('../../assets/adminData.js')
   export default {
@@ -117,6 +118,10 @@
           }
         })
       },
+      videos_lista(id){
+        ruta('/Videos_listaR/'+id)
+        window.location.replace('/Videos_listaR/'+id)
+      }
     },
     computed:{
       ...mapState(['lista_reproduccion_vuex', 'is_home_state']),

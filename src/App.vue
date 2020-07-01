@@ -30,7 +30,6 @@
     },
     created(){
       this.verifi_first_user()
-      console.log(this.is_logged, " esto es ")
     },
     methods:{
       async verifi_first_user(){
@@ -51,9 +50,19 @@
               if (this.$route.path !== path) this.$router.push(path)
             }else{
               var Tdata = JSON.parse(Cookies.get('Tdata'))
+              
+              var Ruta = Cookies.get('path')
+              console.log(Ruta, " esto es lo que quiero ver la ruta z<<<<")
               this.is_logged = Tdata.is_logged
-              const path = '/'
-              if (this.$route.path !== path) this.$router.push(path)
+              if(!Ruta){
+                const path = "/"
+                if (this.$route.path !== path) this.$router.push(path)
+              }else{
+                var path1 =  JSON.parse(Cookies.get('path'))
+                const path = path1.ruta
+                if (this.$route.path !== path) this.$router.push(path)
+              }
+              
             }           
           }
         }

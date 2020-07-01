@@ -263,11 +263,14 @@ export default {
                     anio: this.one_video_selected[3].text,
                     genero: this.one_video_selected[4].text,
                 }
-                var update_data = await this.axios.put(this.url+'/album/'+this.one_video_selected[5].id,{
+                var update_data = await this.axios.put(this.url+'/album/'+this.one_video_selected[5].id,
+                data,
+                {
                     headers: {
-                        'Authorization': this.data_t.tk
+                        Authorization: this.data_t.tk
                     }
-                }, data)
+                })
+
                 if(update_data.data.success == true){
                    error = false 
                 }else{
@@ -342,7 +345,7 @@ export default {
         async mostrar_video(id_video){    
             var error = false      
             try{
-                var one_video = await this.axios.get(this.url+'/album/'+id_video,{
+                var one_video = await this.axios.get(this.url+'/album_one/'+id_video,{
                     headers: {
                         'Authorization': this.data_t.tk
                     }

@@ -19,8 +19,10 @@
             </div>
         </div>
         <div class="new-cards">
+           <!-- para la paginacion remplazamos esto  
+                <div class="card" v-for="(list,index) of video_list[selectded_page]" :key="index" > -->
             <div class="card" v-for="(list,index) of video_list" :key="index" >
-                <img class="card-img" :src="url+'/'+list.albun.videoPath"> 
+                <img class="card-img" style=" width: 100%; height: 100%; " :src="url+'/'+list.albun.videoPath"> 
                 
                 <div  class="card-img-overlay text-white d-flex flex-column justify-content-center">
                     <h4 style="color: white;" class="card-title">{{list.albun.artista}}</h4>                                                    
@@ -32,8 +34,21 @@
                     </div>
                 </div>
             </div> 
-             
+            
         </div>
+        <!-- esto es para la paginacion -->
+        <!-- <div>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item"><a class="page-link" @click="paginacion(video_list,2)">Previous</a></li>
+                    <li class="page-item" v-for="(num, i) in page_num" :key="i" @click="cambiar_pagina(i)"><a class="page-link" >{{i+1}}</a></li>
+                   
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                </ul>
+            </nav>
+        </div> -->
+      
+       
     </div>
 </template>
 
@@ -49,6 +64,8 @@ export default {
         data_t: JSON.parse(Cookies.get('Tdata')),
         url: data_url.default.url,
         video_list:[],
+        page_num:'',
+        selectded_page:0,
         last_video:{
             artista:'',
             name:'',
@@ -58,6 +75,8 @@ export default {
     }),
     created(){
         this.get_list_videos()
+        
+        console.log(this.paginacion(this.video_list, 2), " easdasd")
     },
     methods:{
         /* hover(data){
@@ -74,8 +93,12 @@ export default {
                         'Authorization': this.data_t.tk
                     }
                 })
-                console.log(videos.data, " esto es la respuesta <<<<<<<<<<")
-                this.video_list = videos.data                
+                //console.log(videos.data, " esto es la respuesta <<<<<<<<<<")
+                this.video_list = videos.data    
+                //para la paginacion <<<<<<<<<<<<<<<<<  
+                    /* this.video_list = this.paginacion(videos.data, 8)     
+                    this.page_num = this.video_list.length     */
+                //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
                 var last_position = videos.data.length
                 this.last_video.artista = videos.data[last_position-1].albun.artista
                 this.last_video.name = videos.data[last_position-1].albun.nombre
@@ -92,7 +115,22 @@ export default {
         video_click(id_video){
             console.log(id_video)
             this.$router.push('/ver_video/'+id_video)
-        }
+        },
+        //funciones para la paginacion
+        paginacion(arr, size){
+            return arr.reduce((acc, val, i) => {
+                let idx = Math.floor(i / size)
+                let page = acc[idx] || (acc[idx] = [])
+                page.push(val)
+                return acc
+            }, [])
+        },
+        cambiar_pagina(pagina){
+            this.selectded_page = pagina
+            console.log(this.selectded_page)
+        },
+        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        
     }
     
 }
@@ -121,6 +159,7 @@ export default {
         gap: 10px;
         margin: -275px 0;
     }
+    
     @media (max-width: 1700px){
         .new-cards{
             margin: -200px 0;

@@ -3,8 +3,8 @@
         
         
         <transition  name="show-alert" v-if="show.erro">
-            <transition-group  tag="li"  >
-                <b-alert v-for="(list, index) of msg_error" :key="index"  class="alert" show variant="danger">Ya se creo el rol {{list.nombre}}</b-alert> 
+            <transition-group  v-for="(list, index) of msg_error" :key="index" tag="li"  >
+                <b-alert  class="alert" show variant="danger">Ya se creo el rol {{list.nombre}}</b-alert> 
             </transition-group>
         </transition>     
         <transition name="slide-fade">
